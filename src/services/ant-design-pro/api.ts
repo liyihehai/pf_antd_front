@@ -2,8 +2,9 @@
 /* eslint-disable */
 import { request } from 'umi';
 import { AES_ECB_encrypt } from '@/secret';
+import {setStorage,getStorage,removeStorage} from '@/components/Global/LocalStoreUtil';
 
-const current_user: API.CurrentUser = {};
+const login_session_key = 'login_session_key';
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   /*
@@ -14,16 +15,23 @@ export async function currentUser(options?: { [key: string]: any }) {
     ...(options || {}),
   });
   */
-  //当前用户信息从model中获取
-  return { data: { ...current_user } };
+  const userString = getStorage(login_session_key);
+  if (userString){
+    const current_user: API.CurrentUser = JSON.parse(userString);
+    return { data: { ...current_user }};
+  }
+  return undefined;
 }
 
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
+  /*
   return request<Record<string, any>>('/api/login/outLogin', {
     method: 'POST',
     ...(options || {}),
   });
+  */
+  removeStorage(login_session_key);
 }
 
 /** 登录接口 POST /api/login/account|mobile */
@@ -51,10 +59,11 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       ...(options || {}),
     });
     if (checkResult.success) {
+      const current_user: API.CurrentUser = {};
       current_user.name = checkResult.data.OperatorInfo.operatorName;
       current_user.userid = checkResult.data.OperatorInfo.operatorCode;
       current_user.signature = checkResult.data.OperatorInfo.token;
-
+      setStorage(login_session_key,current_user);
       return {
         status: 'ok',
         type: type,

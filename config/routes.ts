@@ -2,6 +2,7 @@
   {
     path: '/',
     name: '',
+    redirect: '/welcome',
   },
   {
     path: '/user',
