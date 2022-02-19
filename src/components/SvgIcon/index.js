@@ -1,5 +1,6 @@
 import { createFromIconfontCN } from '@ant-design/icons';
+import defaultSettings from '../../../config/defaultSettings';
 
 export default createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_3181152_h7xe3kqyxxp.js',
+  scriptUrl: defaultSettings.scriptUrl,
 });

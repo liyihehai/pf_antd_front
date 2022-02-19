@@ -105,6 +105,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     breadcrumbRender: (routers = []) => {
+      console.log(history.location.pathname);
       const index = routers.length - 1;
       const arr = [
         {

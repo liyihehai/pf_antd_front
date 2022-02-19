@@ -2,9 +2,14 @@
 /* eslint-disable */
 import { request } from 'umi';
 import { AES_ECB_encrypt } from '@/secret';
-import {setStorage,getStorage,removeStorage} from '@/components/Global/LocalStoreUtil';
+import {
+  setStorage,
+  getStorage,
+  removeStorage,
+  login_session_key,
+  user_menu_functions,
+} from '@/components/Global/LocalStoreUtil';
 
-const login_session_key = 'login_session_key';
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   /*
@@ -16,9 +21,9 @@ export async function currentUser(options?: { [key: string]: any }) {
   });
   */
   const userString = getStorage(login_session_key);
-  if (userString){
+  if (userString) {
     const current_user: API.CurrentUser = JSON.parse(userString);
-    return { data: { ...current_user }};
+    return { data: { ...current_user } };
   }
   return undefined;
 }
@@ -32,6 +37,7 @@ export async function outLogin(options?: { [key: string]: any }) {
   });
   */
   removeStorage(login_session_key);
+  removeStorage(user_menu_functions);
 }
 
 /** 登录接口 POST /api/login/account|mobile */
@@ -63,7 +69,8 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       current_user.name = checkResult.data.OperatorInfo.operatorName;
       current_user.userid = checkResult.data.OperatorInfo.operatorCode;
       current_user.signature = checkResult.data.OperatorInfo.token;
-      setStorage(login_session_key,current_user);
+      setStorage(login_session_key, current_user);
+      setStorage(user_menu_functions, checkResult.data.MenuFunctions);
       return {
         status: 'ok',
         type: type,
