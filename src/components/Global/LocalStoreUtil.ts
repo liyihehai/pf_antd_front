@@ -1,5 +1,6 @@
 export const login_session_key = 'login_session_key';
 export const user_menu_functions = 'user_menu_functions';
+const user_menu_map = 'user_menu_map';
 /**
  * 写LocalStoreage
  * //storageType（缓存类型，1：localStorage, 2：sessionStorage，默认2）
@@ -96,4 +97,64 @@ export const delCookie = (key: string): void => {
   if (value) {
     setCookie(key, value, -1);
   }
+};
+
+//返回当前操作员信息
+export const getCurrentOperator = (): API.CurrentUser | undefined => {
+  try {
+    const userString = getStorage(login_session_key);
+    if (userString) {
+      const current_user: API.CurrentUser = JSON.parse(userString);
+      return current_user;
+    }
+  } catch (error) {}
+  return undefined;
+};
+
+//返回菜单信息
+export const getStoreMenu = () => {
+  try {
+    const munuString = getStorage(user_menu_functions);
+    if (munuString) {
+      const current_menu = JSON.parse(munuString);
+      return current_menu;
+    }
+  } catch (error) {}
+  return undefined;
+};
+
+const generateMenuMap = (dMap: Map<string, GLOBAL.MenuFunc>, data: GLOBAL.MenuFunc[]) => {
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    dMap.set(item.path, item);
+    if (item.children) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      generateMenuMap(dMap, item.children);
+    }
+  }
+};
+
+//保存菜单MAP结构
+export const saveMenuToMap = (data: GLOBAL.MenuFunc[]) => {
+  const dMap = new Map<string, GLOBAL.MenuFunc>();
+  generateMenuMap(dMap, data);
+  const map_string = JSON.stringify([...dMap]);
+  setStorage(user_menu_map, map_string);
+};
+
+//按路径查询菜单或功能
+export const getMenuFunctiong = (path: string): GLOBAL.MenuFunc | undefined => {
+  const map_string = getStorage(user_menu_map);
+  if (map_string) {
+    const dMap = new Map<string, GLOBAL.MenuFunc>();
+    const menuList: [] = JSON.parse(map_string);
+    if (menuList) {
+      menuList.forEach((menu) => {
+        dMap.set(menu[0], menu[1]);
+      });
+    }
+    const item = dMap.get(path);
+    return item;
+  }
+  return undefined;
 };

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { SettingDrawer } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
+import type { RunTimeLayoutConfig, RequestConfig, RequestOptionsInit, ResponseError } from 'umi';
 import { history, Link } from 'umi';
+import { notification } from 'antd';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
@@ -10,6 +12,7 @@ import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 import fetchMenuData from '@/components/Global/MenuComponent';
 import SvgIcon from '@/components/SvgIcon';
+import { getCurrentOperator, getMenuFunctiong } from '@/components/Global/LocalStoreUtil';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -51,6 +54,60 @@ export async function getInitialState(): Promise<{
     settings: defaultSettings,
   };
 }
+//请求前拦截，并在请求头中增减token
+const authHeaderInterceptor = (url: string, options: RequestOptionsInit) => {
+  const operator = getCurrentOperator();
+  const authHeader = { AjaxToken: operator?.signature };
+  return {
+    url: `${url}`,
+    options: { ...options, interceptors: true, headers: authHeader },
+  };
+};
+//响应后拦截
+const autoResponseInterceptors = (response: Response, options: RequestOptionsInit) => {
+  if (!response.ok) {
+    const { unAutoErrorMsg } = options;
+    if (unAutoErrorMsg) {
+      const newResponse = { ...response };
+      newResponse.ok = true;
+      return newResponse;
+    }
+  }
+  return response;
+};
+
+const errorHandler = (error: ResponseError) => {
+  const { response } = error;
+  if (response && response.errorCode != '0') {
+    const { errorMessage, status, url, statusText } = response;
+    if (errorMessage) {
+      notification.error({
+        message: `请求错误`,
+        description: errorMessage,
+      });
+    } else if (status && statusText) {
+      notification.error({
+        message: `请求错误: ${status} ${url}`,
+        description: statusText,
+      });
+    }
+  }
+
+  if (!response) {
+    notification.error({
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
+    });
+  }
+  throw error;
+};
+
+export const request: RequestConfig = {
+  errorHandler,
+  // 新增自动添加AccessToken的请求前拦截器
+  requestInterceptors: [authHeaderInterceptor],
+  responseInterceptors: [autoResponseInterceptors],
+};
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -86,7 +143,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         return defaultDom;
       }
       return (
-        <Link to={menuItemProps.path ? menuItemProps.path : '#'}>
+        <Link to={menuItemProps?.path ?? '/#'}>
           {menuItemProps.icon && <SvgIcon type={menuItemProps.icon.toString()} />}{' '}
           {menuItemProps.name}
         </Link>
@@ -105,26 +162,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     breadcrumbRender: (routers = []) => {
-      console.log(history.location.pathname);
-      const index = routers.length - 1;
-      const arr = [
-        {
-          breadcrumbName: '主页',
-        },
-        {
-          breadcrumbName: '测试页',
-        },
-        {
-          breadcrumbName: index >= 0 ? routers[index].breadcrumbName : '',
-        },
-      ];
+      const { routePath } = getMenuFunctiong(history.location.pathname) || {};
+      const arr: any[] = [];
+      if (routePath) {
+        const names: string[] = routePath.split('/');
+        names.forEach((name) => arr.push({ breadcrumbName: name }));
+      }
       return arr;
     },
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children, props) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}

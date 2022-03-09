@@ -8,18 +8,11 @@ import {
   removeStorage,
   login_session_key,
   user_menu_functions,
+  saveMenuToMap,
 } from '@/components/Global/LocalStoreUtil';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  /*
-  return request<{
-    data: API.CurrentUser;
-  }>('/api/currentUser', {
-    method: 'GET',
-    ...(options || {}),
-  });
-  */
   const userString = getStorage(login_session_key);
   if (userString) {
     const current_user: API.CurrentUser = JSON.parse(userString);
@@ -30,12 +23,6 @@ export async function currentUser(options?: { [key: string]: any }) {
 
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  /*
-  return request<Record<string, any>>('/api/login/outLogin', {
-    method: 'POST',
-    ...(options || {}),
-  });
-  */
   removeStorage(login_session_key);
   removeStorage(user_menu_functions);
 }
@@ -71,6 +58,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       current_user.signature = checkResult.data.OperatorInfo.token;
       setStorage(login_session_key, current_user);
       setStorage(user_menu_functions, checkResult.data.MenuFunctions);
+      saveMenuToMap(checkResult.data.MenuFunctions);
       return {
         status: 'ok',
         type: type,
