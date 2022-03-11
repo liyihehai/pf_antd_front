@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Tree, Input, Row, Col, Button, Space } from 'antd';
@@ -34,7 +35,6 @@ const MenuList: React.FC = () => {
       const itemKey = getItemKey(item);
       dList.push({ key: itemKey, title: itemTile });
       if (item.children) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         generateList(dList, item.children);
       }
     }
@@ -47,7 +47,6 @@ const MenuList: React.FC = () => {
         return menu;
       } else {
         if (menu.children && menu.children.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const subMenu = getMenu(mCode, menu.children);
           if (subMenu) {
             return subMenu;
@@ -85,8 +84,8 @@ const MenuList: React.FC = () => {
         setDataList(dList);
 
         if (node) {
-          if (node.funCode) {
-            const reloadFunc = getFunc(node.funCode, result.data) ?? {};
+          if ((node as FuncProps).funCode) {
+            const reloadFunc = getFunc((node as FuncProps).funCode, result.data) ?? {};
             setCurrentFunc(reloadFunc);
             setSelectType(2);
           } else {

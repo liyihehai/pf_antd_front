@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Radio, Select, Button, Space, Row, Col } from 'antd';
 import SvgIcon from '@/components/SvgIcon';
@@ -26,7 +27,7 @@ const FuncInfoForm: React.FC<any> = (props) => {
     });
   });
 
-  const modifyFunc = (e) => {
+  const modifyFunc = (e: any) => {
     Modal.confirm({
       title: '温馨提示',
       content: '确定要更改功能定义吗?',
@@ -44,7 +45,7 @@ const FuncInfoForm: React.FC<any> = (props) => {
       },
     });
   };
-  const doDeleteFunc = (e) => {
+  const doDeleteFunc = (_e: any) => {
     Modal.confirm({
       title: '温馨提示',
       content: '确定要删除功能定义吗?',

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { Modal, Form, Input, Row, Col, Radio, Select } from 'antd';
 import { showModal, closeModal } from '@/components/Global';
