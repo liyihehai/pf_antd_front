@@ -3,6 +3,9 @@ import { Modal, Form, Input, Row, Col, Radio, Select } from 'antd';
 import { showModal, closeModal } from '@/components/Global';
 import SvgIcon from '@/components/SvgIcon';
 import styles from '@/components/Global/global.less';
+import { saveMenuModify } from '@/services/sys-set';
+import { sysIcons } from '@/components/Global/data';
+
 const { Option } = Select;
 const FormItem = Form.Item;
 
@@ -35,15 +38,20 @@ const MenuUpdateForm: React.FC<MenuUpdateFormProps> = (props) => {
     setMenu(updateMenu);
   };
 
-  const icons = ['icon-jbs-testquanxianshenpi', 'icon-jbs-testmenu'];
-
   const [form] = Form.useForm();
   const onOk = async () => {
     try {
       const values = await form.validateFields();
       const updateMenu = { ...values, id: menu.id };
-      props.onOk(updateMenu);
+      const result = await saveMenuModify(updateMenu);
+      if (result.success) props.onOk(updateMenu);
     } catch (errorInfo) {}
+  };
+
+  const onMenuCodeChanged = (e: any) => {
+    if (menu.menuClass == Number(0)) {
+      form.setFieldsValue({ parentMenuCode: e.target.value });
+    }
   };
 
   return (
@@ -72,7 +80,7 @@ const MenuUpdateForm: React.FC<MenuUpdateFormProps> = (props) => {
               rules={[{ required: true, message: '请输入菜单代码!' }]}
               initialValue={menu.menuCode}
             >
-              <Input />
+              <Input onChange={onMenuCodeChanged} />
             </FormItem>
           </Col>
           <Col span={12}>
@@ -94,17 +102,16 @@ const MenuUpdateForm: React.FC<MenuUpdateFormProps> = (props) => {
               rules={[{ required: true, message: '菜单等级!' }]}
               initialValue={menu.menuClass}
             >
-              <Input />
+              <Input readOnly={true} />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem
-              label="上级代码"
+              label="&nbsp;&nbsp;&nbsp;上级代码"
               name="parentMenuCode"
-              rules={[{ required: true, message: '上级代码!' }]}
               initialValue={menu.parentMenuCode}
             >
-              <Input />
+              <Input readOnly={true} />
             </FormItem>
           </Col>
         </Row>
@@ -142,7 +149,7 @@ const MenuUpdateForm: React.FC<MenuUpdateFormProps> = (props) => {
               initialValue={menu.menuIcon}
             >
               <Select style={{ width: '100%' }}>
-                {icons.map((name) => (
+                {sysIcons.map((name) => (
                   <Option key={'menuicon-' + name} value={name}>
                     <SvgIcon type={name} />
                   </Option>
@@ -161,7 +168,9 @@ export default MenuUpdateForm;
 export const showMenuUpdateForm = (props?: any) => {
   const param = {
     onOk: (menu: MenuProps) => {
-      console.log('menu:', menu);
+      if (props.notifyMenuChanged) {
+        props.notifyMenuChanged(menu);
+      }
       closeModal();
     },
     ...props,

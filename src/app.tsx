@@ -76,30 +76,37 @@ const autoResponseInterceptors = (response: Response, options: RequestOptionsIni
   return response;
 };
 
-const errorHandler = (error: ResponseError) => {
-  const { response } = error;
-  if (response && response.errorCode != '0') {
-    const { errorMessage, status, url, statusText } = response;
-    if (errorMessage) {
+const errorHandler = (err: ResponseError) => {
+  try {
+    const { response } = err;
+    if (response && response.errorCode == '1009') {
+      history.push(loginPath);
+      return;
+    }
+    if (response && response.errorCode != '0') {
+      const { errorMessage, status, url, statusText } = response;
+      if (errorMessage) {
+        notification.error({
+          message: `请求错误`,
+          description: errorMessage,
+        });
+      } else if (status && statusText) {
+        notification.error({
+          message: `请求错误: ${status} ${url}`,
+          description: statusText,
+        });
+      }
+    }
+    if (!response) {
       notification.error({
-        message: `请求错误`,
-        description: errorMessage,
-      });
-    } else if (status && statusText) {
-      notification.error({
-        message: `请求错误: ${status} ${url}`,
-        description: statusText,
+        description: '您的网络发生异常，无法连接服务器',
+        message: '网络异常',
       });
     }
+  } catch (error) {
+    console.info('error info:' + error);
+    history.push(loginPath);
   }
-
-  if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
-  }
-  throw error;
 };
 
 export const request: RequestConfig = {
@@ -127,11 +134,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     links: isDev
       ? [
-          <Link to="/umi/plugin/openapi" target="_blank">
+          <Link key="link-key-openapi" to="/umi/plugin/openapi" target="_blank">
             <LinkOutlined />
             <span>OpenAPI 文档</span>
           </Link>,
-          <Link to="/~docs">
+          <Link key="link-key-docs" to="/~docs">
             <BookOutlined />
             <span>业务组件文档</span>
           </Link>,
