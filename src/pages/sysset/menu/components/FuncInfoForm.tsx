@@ -48,7 +48,7 @@ const FuncInfoForm: React.FC<any> = (props) => {
   const doDeleteFunc = (_e: any) => {
     Modal.confirm({
       title: '温馨提示',
-      content: '确定要删除功能定义吗?',
+      content: '确定要删除功能[' + func.funCode + ':' + func.funName + ']定义吗?',
       cancelText: '取消',
       okText: '确定',
       onOk: async () => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { Modal, Form, Input, Row, Col, Radio, Select } from 'antd';
 import { showModal, closeModal } from '@/components/Global';
@@ -49,7 +50,7 @@ const MenuUpdateForm: React.FC<MenuUpdateFormProps> = (props) => {
   };
 
   const onMenuCodeChanged = (e: any) => {
-    if (menu.menuClass == Number(0)) {
+    if (menu.menuClass == Number(1)) {
       form.setFieldsValue({ parentMenuCode: e.target.value });
     }
   };

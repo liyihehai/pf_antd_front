@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Radio, Select, Button, Space, Row, Col } from 'antd';
 import SvgIcon from '@/components/SvgIcon';
@@ -23,7 +24,7 @@ const MenuInfoForm: React.FC<any> = (props) => {
     });
   });
 
-  const modifyMenu = (e) => {
+  const modifyMenu = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     Modal.confirm({
       title: '温馨提示',
       content: '确定要更改菜单定义吗?',
@@ -41,10 +42,10 @@ const MenuInfoForm: React.FC<any> = (props) => {
       },
     });
   };
-  const doDeleteMenu = (e) => {
+  const doDeleteMenu = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     Modal.confirm({
       title: '温馨提示',
-      content: '确定要删除菜单定义吗?',
+      content: '确定要删除菜单[' + menu.menuCode + ':' + menu.menuName + ']定义吗?',
       cancelText: '取消',
       okText: '确定',
       onOk: async () => {
