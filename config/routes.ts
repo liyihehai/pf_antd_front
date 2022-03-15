@@ -58,9 +58,13 @@
       },
       {
         name: '菜单管理',
-        icon: 'icon-jbs-testmenu',
         path: '/sysset/menuList',
         component: './sysset/menu/MenuList',
+      },
+      {
+        name: '角色管理',
+        path: '/sysset/roleSetList',
+        component: './sysset/role/RoleList',
       },
       {
         name: '操作员管理',
