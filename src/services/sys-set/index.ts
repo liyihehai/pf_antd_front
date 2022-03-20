@@ -54,3 +54,32 @@ export async function roleSetList(params: any) {
     data: params || {},
   });
 }
+//保存角色定义
+export async function saveRoleModify(params: any) {
+  return request<API.ResponseResult>('/api/roleSetting/saveRoleModify', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//删除角色定义
+export async function deleteRoleByCode(params: any) {
+  return request<API.ResponseResult>('/api/roleSetting/deleteRoleByCode', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//查询角色功能
+export async function queryRoleFunctions(params: any) {
+  return request<API.ResponseResult>('/api/roleSetting/queryRoleFunctions', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+
+//设置角色的功能
+export async function saveRoleFunctions(params: any) {
+  return request<API.ResponseResult>('/api/roleSetting/saveRoleFunctions', {
+    method: 'POST',
+    data: params || {},
+  });
+}

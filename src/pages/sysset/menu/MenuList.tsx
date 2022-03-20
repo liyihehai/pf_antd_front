@@ -9,7 +9,6 @@ import type { MenuProps } from './components/MenuUpdateForm';
 import { showMenuUpdateForm } from './components/MenuUpdateForm';
 import { FolderOutlined, FileOutlined } from '@ant-design/icons';
 import MenuInfoForm from './components/MenuInfoForm';
-import type { FuncProps } from './components/FuncUpdateForm';
 import { showFuncUpdateForm } from './components/FuncUpdateForm';
 import FuncInfoForm from './components/FuncInfoForm';
 
@@ -75,7 +74,7 @@ const MenuList: React.FC = () => {
     return undefined;
   };
 
-  const reloadMenus = (node?: MenuProps | FuncProps | undefined) => {
+  const reloadMenus = (node?: MenuProps | Func.FuncProps | undefined) => {
     AllMenuTree({}).then((result: API.ResponseResult) => {
       if (result) {
         const dList: any[] = [];
@@ -84,8 +83,8 @@ const MenuList: React.FC = () => {
         setDataList(dList);
 
         if (node) {
-          if ((node as FuncProps).funCode) {
-            const reloadFunc = getFunc((node as FuncProps).funCode, result.data) ?? {};
+          if ((node as Func.FuncProps).funCode) {
+            const reloadFunc = getFunc((node as Func.FuncProps).funCode, result.data) ?? {};
             setCurrentFunc(reloadFunc);
             setSelectType(2);
           } else {
@@ -204,7 +203,7 @@ const MenuList: React.FC = () => {
     }
   };
 
-  const onMenuChanged = (node?: MenuProps | FuncProps) => {
+  const onMenuChanged = (node?: MenuProps | Func.FuncProps) => {
     reloadMenus(node);
   };
 

@@ -10,25 +10,11 @@ import { sysIcons } from '@/components/Global/data';
 const { Option } = Select;
 const FormItem = Form.Item;
 
-export type FuncProps = {
-  id?: number;
-  menuCode: string;
-  funCode: string;
-  funName: string;
-  authCode?: string;
-  funParam?: string;
-  funState?: number;
-  funComponent?: string;
-  createTime?: string;
-  funPath?: string;
-  funIcon?: string;
-};
-
 export type FuncUpdateFormProps = {
-  onCancel: (flag?: boolean, formVals?: FuncProps) => void;
-  onOk: (values: FuncProps) => Promise<void>;
+  onCancel: (flag?: boolean, formVals?: Func.FuncProps) => void;
+  onOk: (values: Func.FuncProps) => Promise<void>;
   modalVisible: boolean;
-  func: FuncProps;
+  func: Func.FuncProps;
   maskClosable?: boolean;
   fEnterList?: any[];
 };
@@ -42,7 +28,7 @@ export const getEnterByPath = (fList: any[], path: string) => {
 };
 
 const FuncUpdateForm: React.FC<FuncUpdateFormProps> = (props) => {
-  const [func, setFunc] = useState<FuncProps>(props.func || {});
+  const [func, setFunc] = useState<Func.FuncProps>(props.func || {});
   const fEnterList = props.fEnterList ?? [];
 
   const onFuncStateChanged = (e: any) => {
@@ -200,7 +186,7 @@ export default FuncUpdateForm;
 
 export const showFuncUpdateForm = (props?: any) => {
   const param = {
-    onOk: (func: FuncProps) => {
+    onOk: (func: Func.FuncProps) => {
       if (props.notifyFuncChanged) {
         props.notifyFuncChanged(func);
       }

@@ -4,30 +4,85 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Tree, Input, Row, Col, Button, Space } from 'antd';
-const { Search } = Input;
-import { roleSetList } from '@/services/sys-set';
+import { Button, Modal } from 'antd';
+import { roleSetList, deleteRoleByCode } from '@/services/sys-set';
 import SysRoleSelect from './components/SysRoleSelect';
-import SvgIcon from '@/components/SvgIcon';
+import { showRoleModifyForm } from './components/RoleModifyForm';
+import { showRoleFuncForm } from './components/RoleFuncForm';
+
+let setFunctionButtonClickTime: Date = new Date('2000-01-01 00:00:00');
 
 const RoleList: React.FC = () => {
   const [sysRoleList, setSysRoleList] = useState<any[]>([]);
   const [sysRoleValue, setSysRoleValue] = useState<string>('');
+  const [functionList, setFunctionList] = useState<Func.FuncProps[]>([]);
   useEffect(() => {}, []);
   const actionRef = useRef<ActionType>();
 
-  const modifyRole = (record: Role.RoleListItem) => {};
+  const reload = () => {
+    if (actionRef.current) {
+      actionRef.current.reload();
+    }
+  };
 
-  const deleteRole = (record: Role.RoleListItem) => {};
+  const modifyRole = (record: Role.RoleListItem) => {
+    showRoleModifyForm({
+      sysRoleList,
+      role: record,
+      notifyRoleChanged: (updateRole: Role.RoleListItem) => {
+        if (updateRole) reload();
+      },
+    });
+  };
 
-  const setRoleFunction = (record: Role.RoleListItem) => {};
+  const deleteRole = (record: Role.RoleListItem) => {
+    Modal.confirm({
+      title: '温馨提示',
+      content: '确定要删除角色[' + record.roleCode + ':' + record.roleName + ']定义吗?',
+      cancelText: '取消',
+      okText: '确定',
+      onOk: async () => {
+        const result = await deleteRoleByCode(record);
+        if (result && result.success) {
+          reload();
+        }
+      },
+    });
+  };
 
-  const setSelectedRows = (selectedRows: Role.RoleListItem[]) => {};
+  const setRoleFunction = (record: Role.RoleListItem) => {
+    showRoleFuncForm({
+      functionList,
+      role: record,
+      notifyRoleChanged: (updateRole: Role.RoleListItem) => {
+        if (updateRole) reload();
+      },
+    });
+  };
 
-  const addRole = () => {};
+  const addRole = () => {
+    const role = {};
+    showRoleModifyForm({
+      sysRoleList,
+      role,
+      notifyRoleChanged: (updateRole: Role.RoleListItem) => {
+        if (updateRole) reload();
+      },
+    });
+  };
 
   const onSysRoleSelectChanged = (value: string) => {
     setSysRoleValue(value);
+  };
+
+  const onSetRoleFuncClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, record: any) => {
+    const nDate = new Date();
+    if (nDate.getTime() - setFunctionButtonClickTime.getTime() < 2000) {
+      return;
+    } else {
+      setFunctionButtonClickTime = nDate;
+      setRoleFunction(record);
+    }
   };
 
   const columns: ProColumns<Role.RoleListItem>[] = [
@@ -98,8 +153,8 @@ const RoleList: React.FC = () => {
         </a>,
         <a
           key="setRoleFunction"
-          onClick={() => {
-            setRoleFunction(record);
+          onClick={(e) => {
+            onSetRoleFuncClick(e, record);
           }}
         >
           功能
@@ -113,6 +168,7 @@ const RoleList: React.FC = () => {
     const result = await roleSetList(requestParams);
     if (result.success) {
       setSysRoleList(result.data.sysRoleList);
+      setFunctionList(result.data.functionList);
       return result.data.roleList;
     }
     return { data: [], total: 0, success: false };
@@ -143,11 +199,7 @@ const RoleList: React.FC = () => {
         ]}
         request={(params) => queryRoleList(params)}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
+        rowSelection={false}
         pagination={{ pageSize: 10, current: 1 }}
       />
     </PageContainer>
