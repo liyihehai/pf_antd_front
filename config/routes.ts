@@ -69,7 +69,7 @@
       {
         name: '操作员管理',
         icon: 'icon-jbs-testCustomermanagement',
-        path: '/sysset/operatorList',
+        path: '/sysset/operatorSetList',
         component: './sysset/operator/OperatorList',
       },
     ],
