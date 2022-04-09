@@ -6,4 +6,11 @@ declare namespace GLOBAL {
     routePath?: string;
     children?: MenuFunc[];
   };
+  type UploadFileItem = {
+    uid: string;
+    name: string;
+    status: undefined;
+    url: string;
+    thumbUrl: string;
+  };
 }

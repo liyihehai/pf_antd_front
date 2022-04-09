@@ -1,5 +1,7 @@
 export const login_session_key = 'login_session_key';
 export const user_menu_functions = 'user_menu_functions';
+export const app_env_data = 'app_env_data';
+
 const user_menu_map = 'user_menu_map';
 /**
  * 写LocalStoreage
@@ -157,4 +159,20 @@ export const getMenuFunctiong = (path: string): GLOBAL.MenuFunc | undefined => {
     return item;
   }
   return undefined;
+};
+
+export const getAppEnvData = () => {
+  try {
+    const ss = getStorage(app_env_data);
+    if (ss) {
+      const envData: API.EnvData = JSON.parse(ss);
+      return envData;
+    }
+  } catch (error) {}
+  return undefined;
+};
+
+export const makeStaticUrl = (url: string) => {
+  const appEnvData = getAppEnvData();
+  return appEnvData?.uploadStaticRoot + '/' + url;
 };

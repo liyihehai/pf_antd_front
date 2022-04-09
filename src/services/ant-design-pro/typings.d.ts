@@ -23,6 +23,14 @@ declare namespace API {
     phone?: string;
   };
 
+  type EnvData = {
+    contextPath: string;
+    debug: string;
+    staticRoot: string;
+    localHostName: string;
+    uploadStaticRoot: string;
+  };
+
   type LoginResult = {
     status?: string;
     type?: string;

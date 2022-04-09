@@ -87,7 +87,7 @@
         name: '商户申请',
         icon: 'icon-jbs-testCustomermanagement',
         path: '/merchant/applyList',
-        component: './merchant/apply/ApplyList',
+        component: './merchant/apply/MerchantApplyList',
       },
       {
         name: '商户设置',

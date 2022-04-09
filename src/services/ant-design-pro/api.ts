@@ -8,6 +8,7 @@ import {
   removeStorage,
   login_session_key,
   user_menu_functions,
+  app_env_data,
   saveMenuToMap,
 } from '@/components/Global/LocalStoreUtil';
 
@@ -58,6 +59,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       current_user.signature = checkResult.data.OperatorInfo.token;
       setStorage(login_session_key, current_user);
       setStorage(user_menu_functions, checkResult.data.MenuFunctions);
+      setStorage(app_env_data, checkResult.data.envData);
       saveMenuToMap(checkResult.data.MenuFunctions);
       return {
         status: 'ok',
