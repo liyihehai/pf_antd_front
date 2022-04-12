@@ -8,9 +8,13 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { TextArea } = Input;
 
-const ApplyMerchantTab: React.FC<MApplay.ApplyTabProp> = (props) => {
-  const form = props.form;
+type ApplyMerchantTabProp = MApplay.ApplyTabProp & {
+  busiTypeList: GLOBAL.StrKeyValue[];
+};
 
+const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
+  const form = props.form;
+  const busiTypeList: GLOBAL.StrKeyValue[] = props.busiTypeList;
   const makePCA = (contentObj: MApplay.MerchantExp) => {
     if (contentObj.pmProvince && contentObj.pmCity && contentObj.pmArea) {
       return [contentObj.pmProvince, contentObj.pmCity, contentObj.pmArea];
@@ -135,18 +139,13 @@ const ApplyMerchantTab: React.FC<MApplay.ApplyTabProp> = (props) => {
                 onSelectChanged(value, 'pmBusiType');
               }}
             >
-              <Option key={'1'}>
-                <span>{'操作员申请'}</span>
-              </Option>
-              <Option key={'2'}>
-                <span>{'网站自助申请'}</span>
-              </Option>
-              <Option key={'3'}>
-                <span>{'APP自助申请'}</span>
-              </Option>
-              <Option key={'4'}>
-                <span>{'业务员申请'}</span>
-              </Option>
+              {busiTypeList.map((item) => {
+                return (
+                  <Option key={item.key} value={item.key}>
+                    <span>{item.value}</span>
+                  </Option>
+                );
+              })}
             </Select>
           </FormItem>
         </Col>

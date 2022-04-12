@@ -28,3 +28,31 @@ export async function queryAddressGeocode(params: any) {
     data: params || {},
   });
 }
+//分页取得数据字典子项列表（分页，含除删除以外的所有子项）
+export async function getLibraryItemList(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/library/getLibraryItemList', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//保存数据字典分类
+export async function saveLibraryItem(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/library/saveLibraryItem', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//删除数据字典分项
+export async function delLibraryItem(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/library/delLibraryItem', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//按分类代码取得有效的分项集合
+export async function getValidLibItems(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/library/getValidLibItems', {
+    method: 'POST',
+    data: params || {},
+  });
+}

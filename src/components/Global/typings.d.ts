@@ -13,4 +13,8 @@ declare namespace GLOBAL {
     url: string;
     thumbUrl: string;
   };
+  type StrKeyValue = {
+    key: string;
+    value?: string;
+  };
 }

@@ -6,23 +6,37 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Modal, Tabs } from 'antd';
 import styles from '@/components/Global/global.less';
 import { applyList } from '@/services/merchant';
+import { LibType } from '@/components/Global/data';
 import { showApplyModifyForm } from './components/ApplyModifyForm';
+import { getValidLibItems } from '@/services/pf-basic';
 
 const { TabPane } = Tabs;
 
 const MerchantApplyList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selState, setSelState] = useState<number>(0);
+  const [busiTypeList, setBusiTypeList] = useState<GLOBAL.StrKeyValue[]>([]);
 
   const reload = () => {
     if (actionRef.current) {
       actionRef.current.reload();
     }
   };
+  //加载行业分类
+  const loadBusiType = async () => {
+    const result = await getValidLibItems({ libTypeCode: LibType.busiType });
+    if (result && result.success) {
+      setBusiTypeList(result.data);
+    }
+  };
+
+  useEffect(() => {
+    loadBusiType();
+  }, []);
 
   const addApply = () => {
     const applyContentJson = {
-      pmBusiType: 0,
+      pmBusiType: 'A',
     };
     showApplyModifyForm({
       apply: {
@@ -35,6 +49,7 @@ const MerchantApplyList: React.FC = () => {
       notifyModifyChanged: (apply: MApplay.ApplayProps) => {
         if (apply) reload();
       },
+      busiTypeList,
     });
   };
   const modifyApplay = (record: MApplay.ApplayProps) => {
@@ -43,6 +58,7 @@ const MerchantApplyList: React.FC = () => {
       notifyModifyChanged: (apply: MApplay.ApplayProps) => {
         if (apply) reload();
       },
+      busiTypeList,
     });
   };
   const comfireApply = (record: MApplay.ApplayProps) => {};
@@ -51,6 +67,7 @@ const MerchantApplyList: React.FC = () => {
     showApplyModifyForm({
       apply: record,
       lsView: true,
+      busiTypeList,
     });
   };
 
@@ -122,12 +139,13 @@ const MerchantApplyList: React.FC = () => {
       title: '商户名称',
       dataIndex: 'pmName',
       align: 'left',
-      width: 200,
+      width: '250px',
     },
     {
       title: '公司或个人',
       dataIndex: 'pmCompanyPerson',
       align: 'left',
+      width: '100px',
       valueEnum: {
         null: {
           text: '全部',
@@ -144,6 +162,7 @@ const MerchantApplyList: React.FC = () => {
       title: '申请方式',
       dataIndex: 'applyWays',
       align: 'left',
+      width: '100px',
       valueEnum: {
         null: {
           text: '全部',
@@ -165,6 +184,7 @@ const MerchantApplyList: React.FC = () => {
     {
       title: '申请状态',
       dataIndex: 'applyState',
+      width: '100px',
       hideInSearch: true,
       valueEnum: {
         null: {
@@ -190,12 +210,14 @@ const MerchantApplyList: React.FC = () => {
     {
       title: '申请人',
       dataIndex: 'creatorName',
+      width: '60px',
       align: 'left',
     },
     {
       title: '申请时间',
       dataIndex: 'createTime',
       align: 'left',
+      width: '110px',
       valueType: 'date',
       hideInSearch: true,
     },
@@ -209,24 +231,28 @@ const MerchantApplyList: React.FC = () => {
     {
       title: '处理人',
       dataIndex: 'confirmName',
+      width: '60px',
       align: 'left',
     },
     {
       title: '锁定时间',
       dataIndex: 'lockTime',
       align: 'left',
+      width: '110px',
       valueType: 'date',
       hideInSearch: true,
     },
     {
       title: '复核人',
       dataIndex: 'checkerName',
+      width: '60px',
       align: 'left',
     },
     {
       title: '复核时间',
       dataIndex: 'checkTime',
       align: 'left',
+      width: '110px',
       valueType: 'date',
       hideInSearch: true,
     },

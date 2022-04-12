@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Row, Col, Radio, Button, Select, Tabs } from 'antd';
@@ -6,6 +7,8 @@ import styles from '@/components/Global/global.less';
 import { saveMerchantApply } from '@/services/merchant';
 import ApplyMerchantTab from './ApplyMerchantTab';
 import ApplyIntroduceTab from './ApplyIntroduceTab';
+import ApplyLegalPersonTab from './ApplyLegalPersonTab';
+import { DefaultOptionType } from 'antd/lib/select';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -14,8 +17,10 @@ const { TabPane } = Tabs;
 
 type AFormProp = MApplay.ApplyFormProps & {
   lsView?: boolean;
+  busiTypeList: GLOBAL.StrKeyValue[];
 };
 const ApplyModifyForm: React.FC<AFormProp> = (props) => {
+  const busiTypeList: GLOBAL.StrKeyValue[] = props.busiTypeList;
   const [apply, setApply] = useState<MApplay.ApplayProps>(props.apply || {});
   const [lsView] = useState<boolean>(props.lsView ?? false);
   const isModify: boolean = apply.id && apply.id > 0 ? true : false;
@@ -23,6 +28,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
   const [applyContent, setApplyContent] = useState<MApplay.MerchantExp>(
     apply.applyContent ? JSON.parse(apply.applyContent) : {},
   );
+  const [pmCompanyPerson, setPmCompanyPerson] = useState<number>(apply.pmCompanyPerson ?? 1);
 
   useEffect(() => {}, [props]);
   const [form] = Form.useForm();
@@ -30,7 +36,13 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
   const onOk = async () => {
     try {
       const values = await form.validateFields();
-      const updateApply = { ...values, id: apply.id, actionType: isModify ? 2 : 1 };
+      const applyContentString = JSON.stringify(applyContent);
+      const updateApply = {
+        ...values,
+        id: apply.id,
+        applyContent: applyContentString,
+        actionType: isModify ? 2 : 1,
+      };
       const result = await saveMerchantApply(updateApply);
       if (result.success && props.onOk) props.onOk(updateApply);
     } catch (errorInfo) {}
@@ -62,8 +74,14 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
     return buttons;
   };
 
+  const onPmCompanyPersonChanged = (
+    value: any,
+    option: DefaultOptionType | DefaultOptionType[],
+  ) => {
+    setPmCompanyPerson(Number(value));
+  };
+
   const onContentChanged = (content: MApplay.MerchantExp): void => {
-    console.info(content);
     setApplyContent(content);
   };
 
@@ -109,7 +127,11 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                   rules={[{ required: true, message: '公司或个人!' }]}
                   initialValue={apply.pmCompanyPerson + ''}
                 >
-                  <Select>
+                  <Select
+                    onChange={(value: any, option: DefaultOptionType | DefaultOptionType[]) => {
+                      onPmCompanyPersonChanged(value, option);
+                    }}
+                  >
                     <Option key={'1'}>
                       <span>{'公司'}</span>
                     </Option>
@@ -208,7 +230,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 20 }}
                 >
-                  <Radio.Group>
+                  <Radio.Group disabled={true}>
                     <Radio value={0}>申请编辑</Radio>
                     <Radio value={1}>申请通过</Radio>
                     <Radio value={2}>待审核</Radio>
@@ -226,6 +248,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
               isModify={isModify}
               form={form}
               onContentChanged={onContentChanged}
+              busiTypeList={busiTypeList}
             />
           </TabPane>
           <TabPane tab="商户介绍" key="2">
@@ -235,6 +258,16 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
               isModify={isModify}
               form={form}
               onContentChanged={onContentChanged}
+            />
+          </TabPane>
+          <TabPane tab="商户法人" key="3">
+            <ApplyLegalPersonTab
+              content={applyContent}
+              lsView={lsView}
+              isModify={isModify}
+              form={form}
+              onContentChanged={onContentChanged}
+              pmCompanyPerson={pmCompanyPerson}
             />
           </TabPane>
         </Tabs>

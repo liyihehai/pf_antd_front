@@ -75,6 +75,21 @@
     ],
   },
   {
+    name: '基础数据',
+    path: '/basicInfo',
+    routes: [
+      {
+        path: '/basicInfo',
+        redirect: '/basicInfo/library',
+      },
+      {
+        name: '数据字典',
+        path: '/basicInfo/library',
+        component: './basicInfo/library',
+      },
+    ],
+  },
+  {
     name: '商户管理',
     icon: 'icon-jbs-testCustomermanagement',
     path: '/merchant',
@@ -96,12 +111,6 @@
         component: './merchant/setting/MerchantSettingList',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     component: './404',
