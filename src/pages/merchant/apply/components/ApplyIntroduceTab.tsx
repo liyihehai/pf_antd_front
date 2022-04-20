@@ -73,16 +73,18 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
           <FormItem label="商户标志" name="pmLogo">
             <Card bodyStyle={{ padding: '1px' }}>
               <Image width={72} height={72} src={makeStaticUrl(pmLogo)} fallback={BlankPicture} />
-              <Upload
-                customRequest={(options: any) => {
-                  questUpload(options, 'pmLogo');
-                }}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />} />
-              </Upload>
+              {!lsView && (
+                <Upload
+                  customRequest={(options: any) => {
+                    questUpload(options, 'pmLogo');
+                  }}
+                  listType="picture"
+                  showUploadList={false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />} />
+                </Upload>
+              )}
             </Card>
           </FormItem>
         </Col>
@@ -92,16 +94,18 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
           <FormItem label="商户图片1" name="pmPic1">
             <Card bodyStyle={{ padding: '1px' }}>
               <Image width={200} height={120} src={makeStaticUrl(pmPic1)} fallback={BlankPicture} />
-              <Upload
-                customRequest={(options: any) => {
-                  questUpload(options, 'pmPic1');
-                }}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />} />
-              </Upload>
+              {!lsView && (
+                <Upload
+                  customRequest={(options: any) => {
+                    questUpload(options, 'pmPic1');
+                  }}
+                  listType="picture"
+                  showUploadList={false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />} />
+                </Upload>
+              )}
             </Card>
           </FormItem>
         </Col>
@@ -109,16 +113,18 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
           <FormItem label="商户图片2" name="pmPic2">
             <Card bodyStyle={{ padding: '1px' }}>
               <Image width={200} height={120} src={makeStaticUrl(pmPic2)} fallback={BlankPicture} />
-              <Upload
-                customRequest={(options: any) => {
-                  questUpload(options, 'pmPic2');
-                }}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />} />
-              </Upload>
+              {!lsView && (
+                <Upload
+                  customRequest={(options: any) => {
+                    questUpload(options, 'pmPic2');
+                  }}
+                  listType="picture"
+                  showUploadList={false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />} />
+                </Upload>
+              )}
             </Card>
           </FormItem>
         </Col>
@@ -128,16 +134,18 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
           <FormItem label="商户图片3" name="pmPic3">
             <Card bodyStyle={{ padding: '1px' }}>
               <Image width={200} height={120} src={makeStaticUrl(pmPic3)} fallback={BlankPicture} />
-              <Upload
-                customRequest={(options: any) => {
-                  questUpload(options, 'pmPic3');
-                }}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />} />
-              </Upload>
+              {!lsView && (
+                <Upload
+                  customRequest={(options: any) => {
+                    questUpload(options, 'pmPic3');
+                  }}
+                  listType="picture"
+                  showUploadList={false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />} />
+                </Upload>
+              )}
             </Card>
           </FormItem>
         </Col>

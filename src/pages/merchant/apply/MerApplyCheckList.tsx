@@ -1,21 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Modal, Tabs } from 'antd';
+import { Button, message, Modal, Tabs } from 'antd';
 import styles from '@/components/Global/global.less';
-import { applyList } from '@/services/merchant';
+import {
+  applyCheckList,
+  deleteApply,
+  applyDistribute,
+  applyReject,
+  applyRefuse,
+  applyPass,
+} from '@/services/merchant';
 import { LibType } from '@/components/Global/data';
 import { showApplyModifyForm } from './components/ApplyModifyForm';
 import { getValidLibItems } from '@/services/pf-basic';
-import { confirmApply, deleteApply } from '@/services/merchant';
-
+import { showOperatorSelectForm } from '@/pages/globalForm/OperatorSelectForm';
+import { showTitleAreaTextForm } from '@/pages/globalForm/TitleAreaTextForm';
+import { showApplyCheckPassForm } from './components/ApplyCheckPassForm';
+import { closeModal } from '@/components/Global';
 const { TabPane } = Tabs;
 
-const MerchantApplyList: React.FC = () => {
+const MerApplyCheckList: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [selState, setSelState] = useState<number>(0);
+  const [selState, setSelState] = useState<number>(4);
   const [busiTypeList, setBusiTypeList] = useState<GLOBAL.StrKeyValue[]>([]);
 
   const reload = () => {
@@ -35,43 +43,79 @@ const MerchantApplyList: React.FC = () => {
     loadBusiType();
   }, []);
 
-  const addApply = () => {
-    const applyContentJson = {
-      pmBusiType: 'A',
-    };
-    showApplyModifyForm({
-      apply: {
-        pmCompanyPerson: 1,
-        confirmType: 1,
-        applyWays: 1,
-        applyState: 0,
-        applyContent: JSON.stringify(applyContentJson),
+  const exportApplyList = () => {};
+
+  const distributeApplay = (record: MApplay.ApplayProps) => {
+    showOperatorSelectForm({
+      selModel: 'single',
+      onSelected: async (operator: Ope.OperatorItem | Ope.OperatorItem[]) => {
+        if (operator) {
+          const ope = operator as Ope.OperatorItem;
+          const param = {
+            id: record.id,
+            opeCode: ope.opeCode,
+          };
+          const result = await applyDistribute(param);
+          if (result && result.success) {
+            message.success(result.errorMessage);
+            closeModal();
+            reload();
+          } else message.error(result.errorMessage);
+        }
       },
-      notifyModifyChanged: (apply: MApplay.ApplayProps) => {
-        if (apply) reload();
-      },
-      busiTypeList,
     });
   };
-  const modifyApplay = (record: MApplay.ApplayProps) => {
-    showApplyModifyForm({
-      apply: record,
-      notifyModifyChanged: (apply: MApplay.ApplayProps) => {
-        if (apply) reload();
-      },
-      busiTypeList,
-    });
-  };
-  const comfireApply = (record: MApplay.ApplayProps) => {
+  const rejectApplay = (record: MApplay.ApplayProps) => {
     Modal.confirm({
       title: '温馨提示',
-      content: '确定要确认商户申请信息[' + record.pmName + ']设置吗?',
+      content: '确定要驳回商户申请信息[' + record.pmName + ']吗?驳回后可重新提交。',
       cancelText: '取消',
       okText: '确定',
       onOk: async () => {
-        const result = await confirmApply(record);
+        const result = await applyReject(record);
         if (result && result.success) {
           reload();
+        }
+      },
+    });
+  };
+  const doApplyPass = (record: MApplay.ApplayProps) => {
+    const param = {
+      apply: record,
+      onOk: async (values: MApplay.ApplyCheckPassResult) => {
+        const submitApply = { ...record };
+        submitApply.pmCode = values.pmCode ?? '';
+        submitApply.pmShortName = values.pmShortName;
+        submitApply.checkDesc = values.checkDesc;
+        const result = await applyPass(submitApply);
+        if (result) {
+          if (result.success) {
+            message.success(result.errorMessage);
+            reload();
+          }
+        }
+      },
+    };
+    showApplyCheckPassForm(param);
+  };
+  const doApplyRefuse = (record: MApplay.ApplayProps) => {
+    showTitleAreaTextForm({
+      title: '输入拒绝原因',
+      keyValue: record.id,
+      keyLabel: '商户名称',
+      keyName: record.pmName,
+      textLabel: '拒绝原因',
+      onConfirm: async (result: GlobalForm.TitleAreaTextResult) => {
+        const refuseResult = await applyRefuse({
+          id: result.keyValue,
+          refuseReason: result.textValue,
+        });
+        if (refuseResult) {
+          if (refuseResult.success) {
+            message.success(refuseResult.errorMessage);
+            closeModal();
+            reload();
+          } else message.success(refuseResult.errorMessage);
         }
       },
     });
@@ -90,6 +134,7 @@ const MerchantApplyList: React.FC = () => {
       },
     });
   };
+
   const applyDetail = (record: MApplay.ApplayProps) => {
     showApplyModifyForm({
       apply: record,
@@ -98,9 +143,9 @@ const MerchantApplyList: React.FC = () => {
     });
   };
 
-  const queryApplyList = async (params: any) => {
+  const queryApplyCheckList = async (params: any) => {
     const requestParams = { ...params, applyState: selState };
-    const result = await applyList(requestParams);
+    const result = await applyCheckList(requestParams);
     if (result.success) {
       return result.data;
     }
@@ -110,42 +155,6 @@ const MerchantApplyList: React.FC = () => {
   //渲染按钮
   const renderRowButton = (record: MApplay.ApplayProps) => {
     const buttons = [];
-    if (record.applyState == 0) {
-      buttons.push(
-        <a
-          key="modifyApplay"
-          onClick={() => {
-            modifyApplay(record);
-          }}
-        >
-          编辑
-        </a>,
-      );
-    }
-    if (record.applyState == 0) {
-      buttons.push(
-        <a
-          key="comfireApply"
-          onClick={() => {
-            comfireApply(record);
-          }}
-        >
-          确认
-        </a>,
-      );
-    }
-    if (record.applyState == 0) {
-      buttons.push(
-        <a
-          key="delApply"
-          onClick={() => {
-            delApply(record);
-          }}
-        >
-          删除
-        </a>,
-      );
-    }
     if (record.applyState != 0) {
       buttons.push(
         <a
@@ -158,6 +167,63 @@ const MerchantApplyList: React.FC = () => {
         </a>,
       );
     }
+    if (record.applyState == 4) {
+      buttons.push(
+        <a
+          key="distributeApplay"
+          onClick={() => {
+            distributeApplay(record);
+          }}
+        >
+          分配
+        </a>,
+      );
+      buttons.push(
+        <a
+          key="rejectApplay"
+          onClick={() => {
+            rejectApplay(record);
+          }}
+        >
+          驳回
+        </a>,
+      );
+    }
+    if (record.applyState == 2) {
+      buttons.push(
+        <a
+          key="doApplyPass"
+          onClick={() => {
+            doApplyPass(record);
+          }}
+        >
+          通过
+        </a>,
+      );
+      buttons.push(
+        <a
+          key="doApplyRefuse"
+          onClick={() => {
+            doApplyRefuse(record);
+          }}
+        >
+          拒绝
+        </a>,
+      );
+    }
+    if (record.applyState == 3) {
+      buttons.push(
+        <a
+          key="delApply"
+          onClick={() => {
+            delApply(record);
+          }}
+        >
+          删除
+        </a>,
+      );
+    }
+
     return buttons;
   };
 
@@ -300,7 +366,6 @@ const MerchantApplyList: React.FC = () => {
 
   const tabOptions = (
     <Tabs onChange={onStateSelChanged} type="card" defaultValue={selState + ''}>
-      <TabPane tab="编辑" key="0"></TabPane>
       <TabPane tab="待分配" key="4"></TabPane>
       <TabPane tab="待审核" key="2"></TabPane>
       <TabPane tab="已通过" key="1"></TabPane>
@@ -327,13 +392,13 @@ const MerchantApplyList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              addApply();
+              exportApplyList();
             }}
           >
-            <PlusOutlined /> 新增申请
+            导出
           </Button>,
         ]}
-        request={(params: any) => queryApplyList(params)}
+        request={(params: any) => queryApplyCheckList(params)}
         columns={columns}
         rowSelection={false}
         pagination={{ pageSize: 10, current: 1 }}
@@ -342,4 +407,4 @@ const MerchantApplyList: React.FC = () => {
   );
 };
 
-export default MerchantApplyList;
+export default MerApplyCheckList;

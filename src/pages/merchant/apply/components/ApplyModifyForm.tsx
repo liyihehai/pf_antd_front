@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Row, Col, Radio, Button, Select, Tabs } from 'antd';
+import { Modal, Form, Input, Row, Col, Radio, Button, Select, Tabs, message } from 'antd';
 import { showModal, closeModal } from '@/components/Global';
 import styles from '@/components/Global/global.less';
-import { saveMerchantApply } from '@/services/merchant';
+import { saveMerchantApply, sendApplyVerifySM } from '@/services/merchant';
 import ApplyMerchantTab from './ApplyMerchantTab';
 import ApplyIntroduceTab from './ApplyIntroduceTab';
 import ApplyLegalPersonTab from './ApplyLegalPersonTab';
@@ -22,6 +21,8 @@ type AFormProp = MApplay.ApplyFormProps & {
 const ApplyModifyForm: React.FC<AFormProp> = (props) => {
   const busiTypeList: GLOBAL.StrKeyValue[] = props.busiTypeList;
   const [apply, setApply] = useState<MApplay.ApplayProps>(props.apply || {});
+  const [smRandCodeDisabled, setSmRandCodeDisabled] = useState<boolean>(false);
+  const [count, setCount] = useState<string>('验证码');
   const [lsView] = useState<boolean>(props.lsView ?? false);
   const isModify: boolean = apply.id && apply.id > 0 ? true : false;
 
@@ -29,6 +30,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
     apply.applyContent ? JSON.parse(apply.applyContent) : {},
   );
   const [pmCompanyPerson, setPmCompanyPerson] = useState<number>(apply.pmCompanyPerson ?? 1);
+  const [confirmType, setConfirmType] = useState<string>(apply.confirmType + '' ?? '1');
 
   useEffect(() => {}, [props]);
   const [form] = Form.useForm();
@@ -40,6 +42,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
       const updateApply = {
         ...values,
         id: apply.id,
+        applyPhone: apply.applyPhone,
         applyContent: applyContentString,
         actionType: isModify ? 2 : 1,
       };
@@ -76,6 +79,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
 
   const onPmCompanyPersonChanged = (
     value: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     option: DefaultOptionType | DefaultOptionType[],
   ) => {
     setPmCompanyPerson(Number(value));
@@ -83,6 +87,57 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
 
   const onContentChanged = (content: MApplay.MerchantExp): void => {
     setApplyContent(content);
+  };
+
+  const onConfirmTypeChanged = (type: string) => {
+    setConfirmType(type);
+  };
+
+  const onApplyPhoneChanged = (phone: any) => {
+    const updateApply = { ...apply };
+    updateApply.applyPhone = phone.target.value;
+    setApply(updateApply);
+  };
+
+  let sm_timer: NodeJS.Timer | number = 0;
+  const clearSmTimer = () => {
+    if (sm_timer != 0) {
+      clearInterval(sm_timer as NodeJS.Timer);
+      sm_timer = 0;
+    }
+    setCount('验证码');
+    setSmRandCodeDisabled(false);
+  };
+  const setTimer = () => {
+    setSmRandCodeDisabled(true);
+    let counts = 60;
+    sm_timer = setInterval(() => {
+      setCount(`${counts--}s`);
+      if (counts < -1) {
+        clearSmTimer();
+      }
+    }, 1000);
+  };
+
+  const QuerySmRandomCode = async () => {
+    const updateApply = {
+      ...apply,
+    };
+    const result = await sendApplyVerifySM(updateApply);
+    if (result) {
+      if (result.success) message.success(result.errorMessage);
+      else {
+        clearSmTimer();
+        message.error(result.errorMessage);
+      }
+    } else clearSmTimer();
+  };
+
+  const onQuerySmRandomCode = () => {
+    try {
+      setTimer();
+      QuerySmRandomCode();
+    } catch (errorInfo) {}
   };
 
   return (
@@ -148,9 +203,13 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                   label="验证方式"
                   name="confirmType"
                   rules={[{ required: true, message: '请输入验证方式!' }]}
-                  initialValue={apply.confirmType + ''}
+                  initialValue={confirmType}
                 >
-                  <Select>
+                  <Select
+                    onChange={(value) => {
+                      onConfirmTypeChanged(value);
+                    }}
+                  >
                     <Option key={'1'}>
                       <span>{'邮箱'}</span>
                     </Option>
@@ -184,18 +243,61 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                 </FormItem>
               </Col>
             </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem label="验证电话" name="applyPhone" initialValue={apply.applyPhone}>
-                  <Input readOnly={lsView} />
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="验证邮箱" name="applyEmail" initialValue={apply.applyEmail}>
-                  <Input readOnly={lsView} />
-                </FormItem>
-              </Col>
-            </Row>
+            {confirmType == '2' && (
+              <Row>
+                <Col span={12}>
+                  <FormItem label="验证电话">
+                    {!lsView && (
+                      <Input.Group compact>
+                        <Input
+                          value={apply.applyPhone}
+                          style={{ width: 'calc(100% - 75px)' }}
+                          maxLength={11}
+                          onChange={(value: any) => {
+                            onApplyPhoneChanged(value);
+                          }}
+                        />
+                        <Button
+                          type="primary"
+                          disabled={smRandCodeDisabled}
+                          onClick={() => {
+                            onQuerySmRandomCode();
+                          }}
+                          style={{ width: '75px' }}
+                        >
+                          {count}
+                        </Button>
+                      </Input.Group>
+                    )}
+                    {lsView && <Input readOnly={lsView} />}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    label="短信验证码"
+                    name="smRandomCode"
+                    initialValue={apply.smRandomCode}
+                  >
+                    <Input readOnly={lsView} maxLength={6} />
+                  </FormItem>
+                </Col>
+              </Row>
+            )}
+            {confirmType == '1' && (
+              <Row>
+                <Col span={24}>
+                  <FormItem
+                    label="验证邮箱"
+                    name="applyEmail"
+                    initialValue={apply.applyEmail}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                  >
+                    <Input readOnly={lsView} />
+                  </FormItem>
+                </Col>
+              </Row>
+            )}
             <Row>
               <Col span={12}>
                 <FormItem label="申请人代码" name="applyerCode" initialValue={apply.applyerCode}>

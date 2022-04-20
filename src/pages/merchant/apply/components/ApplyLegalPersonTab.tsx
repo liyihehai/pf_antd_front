@@ -115,16 +115,18 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
                 src={makeStaticUrl(pmCertificatePic1)}
                 fallback={BlankPicture}
               />
-              <Upload
-                customRequest={(options: any) => {
-                  questUpload(options, 'pmCertificatePic1');
-                }}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />} />
-              </Upload>
+              {!lsView && (
+                <Upload
+                  customRequest={(options: any) => {
+                    questUpload(options, 'pmCertificatePic1');
+                  }}
+                  listType="picture"
+                  showUploadList={false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />} />
+                </Upload>
+              )}
             </Card>
           </FormItem>
         </Col>
@@ -140,16 +142,18 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
                 src={makeStaticUrl(pmCertificatePic2)}
                 fallback={BlankPicture}
               />
-              <Upload
-                customRequest={(options: any) => {
-                  questUpload(options, 'pmCertificatePic2');
-                }}
-                listType="picture"
-                showUploadList={false}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />} />
-              </Upload>
+              {!lsView && (
+                <Upload
+                  customRequest={(options: any) => {
+                    questUpload(options, 'pmCertificatePic2');
+                  }}
+                  listType="picture"
+                  showUploadList={false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />} />
+                </Upload>
+              )}
             </Card>
           </FormItem>
         </Col>
@@ -165,16 +169,18 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
                   src={makeStaticUrl(pmCertificatePic3)}
                   fallback={BlankPicture}
                 />
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmCertificatePic3');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
+                {!lsView && (
+                  <Upload
+                    customRequest={(options: any) => {
+                      questUpload(options, 'pmCertificatePic3');
+                    }}
+                    listType="picture"
+                    showUploadList={false}
+                    maxCount={1}
+                  >
+                    <Button icon={<UploadOutlined />} />
+                  </Upload>
+                )}
               </Card>
             </FormItem>
           </Col>
@@ -187,16 +193,18 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
                   src={makeStaticUrl(pmCertificatePic4)}
                   fallback={BlankPicture}
                 />
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmCertificatePic4');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
+                {!lsView && (
+                  <Upload
+                    customRequest={(options: any) => {
+                      questUpload(options, 'pmCertificatePic4');
+                    }}
+                    listType="picture"
+                    showUploadList={false}
+                    maxCount={1}
+                  >
+                    <Button icon={<UploadOutlined />} />
+                  </Upload>
+                )}
               </Card>
             </FormItem>
           </Col>

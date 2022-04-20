@@ -174,29 +174,26 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
       </Row>
       <Row>
         <Col span={24}>
-          <FormItem
-            label="详细地址"
-            name="pmAddress"
-            initialValue={pmAddress}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-          >
+          <FormItem label="详细地址" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
             <Input.Group compact>
               <Input
+                value={pmAddress}
                 readOnly={lsView}
-                style={{ width: 'calc(100% - 105px)' }}
+                style={{ width: lsView ? '100%' : 'calc(100% - 105px)' }}
                 onChange={(e: any) => {
                   onInputChanged(e, 'pmAddress');
                 }}
               />
-              <Button
-                type="primary"
-                onClick={() => {
-                  getAddressGeocode();
-                }}
-              >
-                {'获取经纬度'}
-              </Button>
+              {!lsView && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    getAddressGeocode();
+                  }}
+                >
+                  {'获取经纬度'}
+                </Button>
+              )}
             </Input.Group>
           </FormItem>
         </Col>

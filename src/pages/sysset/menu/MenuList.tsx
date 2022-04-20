@@ -273,7 +273,7 @@ const MenuList: React.FC = () => {
               <Button
                 type="primary"
                 onClick={() => addTopMenu()}
-                icon={<SvgIcon type={'icon-jbs-testquanxianshenpi'} />}
+                icon={<SvgIcon type={'icon-jbs-testquanxianshenpi'} width={50} height={50} />}
               >
                 添加顶级菜单
               </Button>

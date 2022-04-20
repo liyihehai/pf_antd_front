@@ -3,6 +3,7 @@ declare namespace MApplay {
     id?: number;
     pmCode: string; //商户代码
     pmName: string; //商户名称
+    pmShortName?: string; //商户简称
     confirmType: number; //验证方式:{1,2}
     applyPhone: string; //电话号码
     applyEmail: string; //邮箱号码
@@ -21,7 +22,7 @@ declare namespace MApplay {
     opeCode: string;
     opeName: string;
     checkResult: number; //审核结果:1审核通过，0审核不通过
-    checkDesc: string;
+    checkDesc?: string;
     checkerCode: string;
     checkerName: string;
     confirmName: string; //提交申请的操作员姓名
@@ -32,7 +33,7 @@ declare namespace MApplay {
 
   type ApplyFormProps = {
     onCancel?: (flag?: boolean, formVals?: MApplay.ApplayProps) => void;
-    onOk?: (values: MApplay.ApplayProps) => Promise<void>;
+    onOk?: (values: MApplay.ApplayProps) => void;
     modalVisible?: boolean;
     apply: MApplay.ApplayProps;
     maskClosable?: boolean;
@@ -83,5 +84,11 @@ declare namespace MApplay {
     isModify?: boolean;
     form: FormInstance<any>;
     onContentChanged: (content: MApplay.MerchantExp) => void;
+  };
+
+  type ApplyCheckPassResult = {
+    pmCode?: string;
+    pmShortName?: string;
+    checkDesc?: string;
   };
 }

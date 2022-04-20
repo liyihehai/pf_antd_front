@@ -173,6 +173,7 @@ export const getAppEnvData = () => {
 };
 
 export const makeStaticUrl = (url: string) => {
+  if (!url) return '';
   const appEnvData = getAppEnvData();
   return appEnvData?.uploadStaticRoot + '/' + url;
 };

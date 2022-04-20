@@ -105,6 +105,12 @@
         component: './merchant/apply/MerchantApplyList',
       },
       {
+        name: '申请审核',
+        icon: 'icon-jbs-testCustomermanagement',
+        path: '/merchant/applyCheckList',
+        component: './merchant/apply/MerApplyCheckList',
+      },
+      {
         name: '商户设置',
         icon: 'icon-jbs-testCustomermanagement',
         path: '/merchant/settingList',
