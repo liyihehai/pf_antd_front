@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, message, Modal, Tabs } from 'antd';
+import { message, Tabs } from 'antd';
 import { getValidLibItems } from '@/services/pf-basic';
 import { LibType } from '@/components/Global/data';
 import styles from '@/components/Global/global.less';
@@ -95,10 +95,10 @@ const MerchantSettingList: React.FC = () => {
 
   const tabOptions = (
     <Tabs onChange={onStateSelChanged} type="card" activeKey={selState + ''}>
-      <TabPane tab="未认证" key="0"></TabPane>
-      <TabPane tab="可服务" key="1"></TabPane>
-      <TabPane tab="已暂停" key="2"></TabPane>
-      <TabPane tab="已下架" key="-1"></TabPane>
+      <TabPane tab="未认证" key="0" />
+      <TabPane tab="可服务" key="1" />
+      <TabPane tab="已暂停" key="2" />
+      <TabPane tab="已下架" key="-1" />
     </Tabs>
   );
 

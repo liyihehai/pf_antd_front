@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Input, message } from 'antd';
 import { showModal, closeModal } from '@/components/Global';
 import styles from '@/components/Global/global.less';
@@ -9,7 +9,7 @@ const { TextArea } = Input;
 
 const TitleAreaTextForm: React.FC<GlobalForm.TitleAreaTextProps> = (props) => {
   const [keyValue] = useState<any>(props.keyValue ?? null);
-  const [textValue, setTextValue] = useState<string>(props.textValue ?? '');
+  const [textValue] = useState<string>(props.textValue ?? '');
   const [form] = Form.useForm();
 
   useEffect(() => {}, [props]);

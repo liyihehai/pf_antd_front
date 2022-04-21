@@ -35,15 +35,15 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
 
   useEffect(() => {
     setContent(props.content);
-    setPmShortName(props.content.pmShortName);
-    setPmEmail(props.content.pmEmail);
-    setPmBusiType(props.content.pmBusiType);
-    setPmZipcode(props.content.pmZipcode);
+    setPmShortName(props.content.pmShortName ?? '');
+    setPmEmail(props.content.pmEmail ?? '');
+    setPmBusiType(props.content.pmBusiType ?? '');
+    setPmZipcode(props.content.pmZipcode ?? '');
     setPCA(makePCA(props.content));
-    setPmAddress(props.content.pmAddress);
-    setPmLinkName(props.content.pmLinkName);
-    setPmLinkPhone(props.content.pmLinkPhone);
-    setPmIntroduce(props.content.pmIntroduce);
+    setPmAddress(props.content.pmAddress ?? '');
+    setPmLinkName(props.content.pmLinkName ?? '');
+    setPmLinkPhone(props.content.pmLinkPhone ?? '');
+    setPmIntroduce(props.content.pmIntroduce ?? '');
   }, [props.content]);
 
   const onInputChanged = (e: any, inputItemName: string) => {

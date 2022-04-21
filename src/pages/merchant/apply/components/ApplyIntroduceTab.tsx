@@ -21,11 +21,11 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
 
   useEffect(() => {
     setContent(props.content);
-    setPmLogo(props.content.pmLogo);
-    setPmPic1(props.content.pmPic1);
-    setPmPic2(props.content.pmPic2);
-    setPmPic3(props.content.pmPic3);
-    setPmRemark(props.content.pmRemark);
+    setPmLogo(props.content.pmLogo ?? '');
+    setPmPic1(props.content.pmPic1 ?? '');
+    setPmPic2(props.content.pmPic2 ?? '');
+    setPmPic3(props.content.pmPic3 ?? '');
+    setPmRemark(props.content.pmRemark ?? '');
   }, [props.content]);
 
   const questUpload = async (options: any, inputItemName: string) => {

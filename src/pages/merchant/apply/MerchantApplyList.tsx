@@ -300,11 +300,11 @@ const MerchantApplyList: React.FC = () => {
 
   const tabOptions = (
     <Tabs onChange={onStateSelChanged} type="card" defaultValue={selState + ''}>
-      <TabPane tab="编辑" key="0"></TabPane>
-      <TabPane tab="待分配" key="4"></TabPane>
-      <TabPane tab="待审核" key="2"></TabPane>
-      <TabPane tab="已通过" key="1"></TabPane>
-      <TabPane tab="未通过" key="3"></TabPane>
+      <TabPane tab="编辑" key="0" />
+      <TabPane tab="待分配" key="4" />
+      <TabPane tab="待审核" key="2" />
+      <TabPane tab="已通过" key="1" />
+      <TabPane tab="未通过" key="3" />
     </Tabs>
   );
 
