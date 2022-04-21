@@ -91,6 +91,7 @@ const MerApplyCheckList: React.FC = () => {
         if (result) {
           if (result.success) {
             message.success(result.errorMessage);
+            closeModal();
             reload();
           }
         }

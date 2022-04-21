@@ -73,3 +73,24 @@ export async function applyPass(params: any) {
     data: params || {},
   });
 }
+/**返回商户列表数据 */
+export async function merchantSettingList(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/merchantSettingList', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**保存商户设置 */
+export async function saveMerchantSetting(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/saveMerchantSetting', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**通过编码查询特定商户信息 */
+export async function queryMerchantDetail(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/queryMerchantDetail', {
+    method: 'POST',
+    data: params || {},
+  });
+}

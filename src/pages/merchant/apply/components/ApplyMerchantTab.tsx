@@ -67,14 +67,14 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
       const labels = selectedOptions.map((option: any) => {
         return option.label;
       });
-      newContent.pmPCAzh = labels[0] + '/' + labels[1] + '/' + labels[2];
+      newContent.pmPcazh = labels[0] + '/' + labels[1] + '/' + labels[2];
       props.onContentChanged(newContent);
     }
   };
 
   const getAddressGeocode = async () => {
     const newContent = { ...content };
-    if (!(newContent.pmProvince && newContent.pmCity && newContent.pmArea && newContent.pmPCAzh)) {
+    if (!(newContent.pmProvince && newContent.pmCity && newContent.pmArea && newContent.pmPcazh)) {
       message.error('请先确定省市及区县');
       return;
     }
@@ -82,7 +82,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
       message.error('请先输入详细地址');
       return;
     }
-    const pcazh = newContent.pmPCAzh;
+    const pcazh = newContent.pmPcazh;
     const result = await queryAddressGeocode({
       addr: pcazh.replaceAll('/', '') + newContent.pmAddress,
     });

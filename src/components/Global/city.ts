@@ -3878,16 +3878,8 @@ export const cityData = [
         label: '无锡市',
         children: [
           {
-            value: '320202',
-            label: '崇安区',
-          },
-          {
-            value: '320203',
-            label: '南长区',
-          },
-          {
-            value: '320204',
-            label: '北塘区',
+            value: '320213',
+            label: '梁溪区',
           },
           {
             value: '320205',
@@ -3910,12 +3902,8 @@ export const cityData = [
             label: '宜兴市',
           },
           {
-            value: '320296',
-            label: '新区',
-          },
-          {
-            value: '320297',
-            label: '其它区',
+            value: '320214',
+            label: '新吴区',
           },
         ],
       },
