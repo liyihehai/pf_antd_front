@@ -29,6 +29,7 @@ declare namespace API {
     staticRoot: string;
     localHostName: string;
     uploadStaticRoot: string;
+    uploadFileServiceURL: string;
   };
 
   type LoginResult = {

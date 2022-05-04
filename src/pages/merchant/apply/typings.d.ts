@@ -80,7 +80,7 @@ declare namespace MApplay {
 
   type ApplyTabProp = {
     content: MApplay.MerchantExp;
-    lsView?: boolean;
+    IsView?: boolean;
     isModify?: boolean;
     form: FormInstance<any>;
     onContentChanged: (content: MApplay.MerchantExp) => void;

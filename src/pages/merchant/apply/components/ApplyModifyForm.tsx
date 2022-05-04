@@ -15,7 +15,7 @@ const { TextArea } = Input;
 const { TabPane } = Tabs;
 
 type AFormProp = MApplay.ApplyFormProps & {
-  lsView?: boolean;
+  IsView: boolean;
   busiTypeList: GLOBAL.StrKeyValue[];
 };
 const ApplyModifyForm: React.FC<AFormProp> = (props) => {
@@ -23,7 +23,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
   const [apply, setApply] = useState<MApplay.ApplayProps>(props.apply || {});
   const [smRandCodeDisabled, setSmRandCodeDisabled] = useState<boolean>(false);
   const [count, setCount] = useState<string>('验证码');
-  const [lsView] = useState<boolean>(props.lsView ?? false);
+  const [IsView] = useState<boolean>(props.IsView ?? false);
   const isModify: boolean = apply.id && apply.id > 0 ? true : false;
 
   const [applyContent, setApplyContent] = useState<MApplay.MerchantExp>(
@@ -59,7 +59,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
         关闭
       </Button>,
     );
-    if (!lsView) {
+    if (!IsView) {
       buttons.push(
         <Button
           type="primary"
@@ -172,7 +172,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                   rules={[{ required: true, message: '请输入商户名称!' }]}
                   initialValue={apply.pmName}
                 >
-                  <Input readOnly={lsView} />
+                  <Input readOnly={IsView} />
                 </FormItem>
               </Col>
               <Col span={12}>
@@ -247,7 +247,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
               <Row>
                 <Col span={12}>
                   <FormItem label="验证电话">
-                    {!lsView && (
+                    {!IsView && (
                       <Input.Group compact>
                         <Input
                           value={apply.applyPhone}
@@ -269,7 +269,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                         </Button>
                       </Input.Group>
                     )}
-                    {lsView && <Input readOnly={lsView} />}
+                    {IsView && <Input readOnly={IsView} />}
                   </FormItem>
                 </Col>
                 <Col span={12}>
@@ -278,7 +278,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                     name="smRandomCode"
                     initialValue={apply.smRandomCode}
                   >
-                    <Input readOnly={lsView} maxLength={6} />
+                    <Input readOnly={IsView} maxLength={6} />
                   </FormItem>
                 </Col>
               </Row>
@@ -293,7 +293,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 20 }}
                   >
-                    <Input readOnly={lsView} />
+                    <Input readOnly={IsView} />
                   </FormItem>
                 </Col>
               </Row>
@@ -301,12 +301,12 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
             <Row>
               <Col span={12}>
                 <FormItem label="申请人代码" name="applyerCode" initialValue={apply.applyerCode}>
-                  <Input readOnly={lsView} />
+                  <Input readOnly={IsView} />
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="申请人姓名" name="applyerName" initialValue={apply.applyerName}>
-                  <Input readOnly={lsView} />
+                  <Input readOnly={IsView} />
                 </FormItem>
               </Col>
             </Row>
@@ -319,7 +319,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
                   labelCol={{ span: 4 }}
                   wrapperCol={{ span: 20 }}
                 >
-                  <TextArea readOnly={lsView} showCount maxLength={100} rows={3} />
+                  <TextArea readOnly={IsView} showCount maxLength={100} rows={3} />
                 </FormItem>
               </Col>
             </Row>
@@ -346,7 +346,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
           <TabPane tab="商户信息" key="1">
             <ApplyMerchantTab
               content={applyContent}
-              lsView={lsView}
+              IsView={IsView}
               isModify={isModify}
               form={form}
               onContentChanged={onContentChanged}
@@ -356,7 +356,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
           <TabPane tab="商户介绍" key="2">
             <ApplyIntroduceTab
               content={applyContent}
-              lsView={lsView}
+              IsView={IsView}
               isModify={isModify}
               form={form}
               onContentChanged={onContentChanged}
@@ -365,7 +365,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
           <TabPane tab="商户法人" key="3">
             <ApplyLegalPersonTab
               content={applyContent}
-              lsView={lsView}
+              IsView={IsView}
               isModify={isModify}
               form={form}
               onContentChanged={onContentChanged}
@@ -380,7 +380,7 @@ const ApplyModifyForm: React.FC<AFormProp> = (props) => {
 
 export default ApplyModifyForm;
 
-export const showApplyModifyForm = (props?: any) => {
+export const showApplyModifyForm = (IsView: boolean, props?: any) => {
   const param = {
     onOk: (apply: MApplay.ApplayProps) => {
       if (props.notifyModifyChanged) {
@@ -389,6 +389,7 @@ export const showApplyModifyForm = (props?: any) => {
       closeModal();
     },
     modalVisible: true,
+    IsView,
     ...props,
   };
   showModal(ApplyModifyForm, param);

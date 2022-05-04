@@ -39,7 +39,7 @@ const MerchantApplyList: React.FC = () => {
     const applyContentJson = {
       pmBusiType: 'A',
     };
-    showApplyModifyForm({
+    showApplyModifyForm(false, {
       apply: {
         pmCompanyPerson: 1,
         confirmType: 1,
@@ -54,7 +54,7 @@ const MerchantApplyList: React.FC = () => {
     });
   };
   const modifyApplay = (record: MApplay.ApplayProps) => {
-    showApplyModifyForm({
+    showApplyModifyForm(false, {
       apply: record,
       notifyModifyChanged: (apply: MApplay.ApplayProps) => {
         if (apply) reload();
@@ -91,7 +91,7 @@ const MerchantApplyList: React.FC = () => {
     });
   };
   const applyDetail = (record: MApplay.ApplayProps) => {
-    showApplyModifyForm({
+    showApplyModifyForm(true, {
       apply: record,
       lsView: true,
       busiTypeList,

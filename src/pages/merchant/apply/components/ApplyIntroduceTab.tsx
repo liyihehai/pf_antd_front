@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Row, Col, Upload, Button, Image, Card } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { uploadImage } from '@/services/pf-basic';
-import { makeStaticUrl } from '@/components/Global/LocalStoreUtil';
-import { BlankPicture } from '@/components/Global/data';
+import { Form, Input, Row, Col, Card } from 'antd';
+import ImgCropUpload from '@/components/ImgCropUpload';
+import { fuProp } from '../MerchantData';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -14,10 +12,9 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
   const [pmPic1, setPmPic1] = useState<string>(content.pmPic1 ?? '');
   const [pmPic2, setPmPic2] = useState<string>(content.pmPic2 ?? '');
   const [pmPic3, setPmPic3] = useState<string>(content.pmPic3 ?? '');
-  const src_pmPic = { pmPic1, pmPic2, pmPic3 };
   const [pmRemark, setPmRemark] = useState<string>(content.pmRemark ?? '');
 
-  const [lsView] = useState<boolean>(props.lsView ?? false);
+  const [IsView] = useState<boolean>(props.IsView ?? false);
 
   useEffect(() => {
     setContent(props.content);
@@ -28,26 +25,10 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
     setPmRemark(props.content.pmRemark ?? '');
   }, [props.content]);
 
-  const questUpload = async (options: any, inputItemName: string) => {
+  const questUpload = async (url: string, inputItemName: string) => {
     const newContent = { ...content };
-    let srcFile = newContent[inputItemName];
-    const srcPic = src_pmPic[inputItemName];
-    let needDelSrcFile = false;
-    if (srcPic == '') {
-      //如果没有初始的图片文件，则需要删除被替换的原图
-      needDelSrcFile = true;
-    } else {
-      if (srcPic != srcFile) {
-        //如果有初始的图片文件，但与要替换的原图不同，也要删除被替换的原图
-        needDelSrcFile = true;
-      }
-    }
-    if (!needDelSrcFile) srcFile = '';
-    const result = await uploadImage({ ...options }, { srcFile });
-    if (result && result.success) {
-      newContent[inputItemName] = result.data;
-      props.onContentChanged(newContent);
-    }
+    newContent[inputItemName] = url;
+    props.onContentChanged(newContent);
   };
 
   const onInputChanged = (e: any, inputItemName: string) => {
@@ -62,7 +43,7 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="客服电话" name="pmCsrPhone" initialValue={content.pmCsrPhone}>
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmCsrPhone');
               }}
@@ -72,19 +53,16 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="商户标志" name="pmLogo">
             <Card bodyStyle={{ padding: '1px' }}>
-              <Image width={72} height={72} src={makeStaticUrl(pmLogo)} fallback={BlankPicture} />
-              {!lsView && (
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmLogo');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
-              )}
+              <ImgCropUpload
+                ImageWidth={72}
+                Imageheight={72}
+                imageSrc={pmLogo}
+                fuProp={fuProp}
+                IsView={IsView}
+                onUploadReturnURL={(url) => {
+                  questUpload(url, 'pmLogo');
+                }}
+              />
             </Card>
           </FormItem>
         </Col>
@@ -93,38 +71,32 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="商户图片1" name="pmPic1">
             <Card bodyStyle={{ padding: '1px' }}>
-              <Image width={200} height={120} src={makeStaticUrl(pmPic1)} fallback={BlankPicture} />
-              {!lsView && (
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmPic1');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
-              )}
+              <ImgCropUpload
+                ImageWidth={200}
+                Imageheight={120}
+                imageSrc={pmPic1}
+                fuProp={fuProp}
+                IsView={IsView}
+                onUploadReturnURL={(url) => {
+                  questUpload(url, 'pmPic1');
+                }}
+              />
             </Card>
           </FormItem>
         </Col>
         <Col span={12}>
           <FormItem label="商户图片2" name="pmPic2">
             <Card bodyStyle={{ padding: '1px' }}>
-              <Image width={200} height={120} src={makeStaticUrl(pmPic2)} fallback={BlankPicture} />
-              {!lsView && (
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmPic2');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
-              )}
+              <ImgCropUpload
+                ImageWidth={200}
+                Imageheight={120}
+                imageSrc={pmPic2}
+                fuProp={fuProp}
+                IsView={IsView}
+                onUploadReturnURL={(url) => {
+                  questUpload(url, 'pmPic2');
+                }}
+              />
             </Card>
           </FormItem>
         </Col>
@@ -133,26 +105,23 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="商户图片3" name="pmPic3">
             <Card bodyStyle={{ padding: '1px' }}>
-              <Image width={200} height={120} src={makeStaticUrl(pmPic3)} fallback={BlankPicture} />
-              {!lsView && (
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmPic3');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
-              )}
+              <ImgCropUpload
+                ImageWidth={200}
+                Imageheight={120}
+                imageSrc={pmPic3}
+                fuProp={fuProp}
+                IsView={IsView}
+                onUploadReturnURL={(url) => {
+                  questUpload(url, 'pmPic3');
+                }}
+              />
             </Card>
           </FormItem>
         </Col>
         <Col span={12}>
           <FormItem label="商户备注" name="pmRemark" initialValue={pmRemark}>
             <TextArea
-              readOnly={lsView}
+              readOnly={IsView}
               showCount
               maxLength={100}
               rows={4}
@@ -166,5 +135,4 @@ const ApplyIntroduceTab: React.FC<MApplay.ApplyTabProp> = (props) => {
     </div>
   );
 };
-
 export default ApplyIntroduceTab;

@@ -1,8 +1,9 @@
+import { appendURL } from './stringUtil';
+
 export const login_session_key = 'login_session_key';
 export const user_menu_functions = 'user_menu_functions';
 export const app_env_data = 'app_env_data';
-
-const user_menu_map = 'user_menu_map';
+export const user_menu_map = 'user_menu_map';
 /**
  * 写LocalStoreage
  * //storageType（缓存类型，1：localStorage, 2：sessionStorage，默认2）
@@ -175,5 +176,11 @@ export const getAppEnvData = () => {
 export const makeStaticUrl = (url: string) => {
   if (!url) return '';
   const appEnvData = getAppEnvData();
-  return appEnvData?.uploadStaticRoot + '/' + url;
+  return appendURL(appEnvData?.uploadStaticRoot, url);
+};
+
+export const makeUploadServiceUrl = (url: string) => {
+  if (!url) return '';
+  const appEnvData = getAppEnvData();
+  return appendURL(appEnvData?.uploadFileServiceURL, url);
 };

@@ -137,7 +137,7 @@ const MerApplyCheckList: React.FC = () => {
   };
 
   const applyDetail = (record: MApplay.ApplayProps) => {
-    showApplyModifyForm({
+    showApplyModifyForm(false, {
       apply: record,
       lsView: true,
       busiTypeList,

@@ -196,7 +196,7 @@ const MerchantDetailForm: React.FC<MerSetting.MerchantFormProps> = (props) => {
           <TabPane tab="商户信息" key="1">
             <ApplyMerchantTab
               content={{ ...merchantExpand }}
-              lsView={IsView}
+              IsView={IsView}
               isModify={true}
               form={form}
               onContentChanged={onContentChanged}
@@ -206,7 +206,7 @@ const MerchantDetailForm: React.FC<MerSetting.MerchantFormProps> = (props) => {
           <TabPane tab="商户介绍" key="2">
             <ApplyIntroduceTab
               content={{ ...merchantExpand }}
-              lsView={IsView}
+              IsView={IsView}
               isModify={true}
               form={form}
               onContentChanged={onContentChanged}
@@ -215,7 +215,7 @@ const MerchantDetailForm: React.FC<MerSetting.MerchantFormProps> = (props) => {
           <TabPane tab="商户法人" key="3">
             <ApplyLegalPersonTab
               content={{ ...merchantExpand }}
-              lsView={IsView}
+              IsView={IsView}
               isModify={true}
               form={form}
               onContentChanged={onContentChanged}

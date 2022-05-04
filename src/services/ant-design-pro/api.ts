@@ -9,6 +9,7 @@ import {
   login_session_key,
   user_menu_functions,
   app_env_data,
+  user_menu_map,
   saveMenuToMap,
 } from '@/components/Global/LocalStoreUtil';
 
@@ -26,6 +27,8 @@ export async function currentUser(options?: { [key: string]: any }) {
 export async function outLogin(options?: { [key: string]: any }) {
   removeStorage(login_session_key);
   removeStorage(user_menu_functions);
+  removeStorage(app_env_data);
+  removeStorage(user_menu_map);
 }
 
 /** 登录接口 POST /api/login/account|mobile */

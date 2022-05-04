@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Row, Col, Upload, Button, Image, Card } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { uploadImage } from '@/services/pf-basic';
-import { makeStaticUrl } from '@/components/Global/LocalStoreUtil';
-import { BlankPicture } from '@/components/Global/data';
+import { Form, Input, Row, Col, Card } from 'antd';
+import ImgCropUpload from '@/components/ImgCropUpload';
+import { fuProp } from '../MerchantData';
 
 const FormItem = Form.Item;
 type LegalPersonTabProp = MApplay.ApplyTabProp & {
@@ -24,44 +22,22 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
   const [pmCertificatePic4, setPmCertificatePic4] = useState<string>(
     content.pmCertificatePic4 ?? '',
   );
-  const src_pmCertificatePic = {
-    pmCertificatePic1,
-    pmCertificatePic2,
-    pmCertificatePic3,
-    pmCertificatePic4,
-  };
-  const [lsView] = useState<boolean>(props.lsView ?? false);
+  const [IsView] = useState<boolean>(props.IsView ?? false);
   const [pmCompanyPerson, setPmCompanyPerson] = useState<number>(props.pmCompanyPerson);
 
   useEffect(() => {
     setContent(props.content);
-    setPmCertificatePic1(props.content.pmCertificatePic1);
-    setPmCertificatePic2(props.content.pmCertificatePic2);
-    setPmCertificatePic3(props.content.pmCertificatePic3);
-    setPmCertificatePic4(props.content.pmCertificatePic4);
+    setPmCertificatePic1(props.content.pmCertificatePic1 ?? '');
+    setPmCertificatePic2(props.content.pmCertificatePic2 ?? '');
+    setPmCertificatePic3(props.content.pmCertificatePic3 ?? '');
+    setPmCertificatePic4(props.content.pmCertificatePic4 ?? '');
     setPmCompanyPerson(props.pmCompanyPerson);
   }, [props]);
 
-  const questUpload = async (options: any, inputItemName: string) => {
+  const questUpload = async (url: string, inputItemName: string) => {
     const newContent = { ...content };
-    let srcFile = newContent[inputItemName];
-    const srcPic = src_pmCertificatePic[inputItemName];
-    let needDelSrcFile = false;
-    if (srcPic == '') {
-      //如果没有初始的图片文件，则需要删除被替换的原图
-      needDelSrcFile = true;
-    } else {
-      if (srcPic != srcFile) {
-        //如果有初始的图片文件，但与要替换的原图不同，也要删除被替换的原图
-        needDelSrcFile = true;
-      }
-    }
-    if (!needDelSrcFile) srcFile = '';
-    const result = await uploadImage({ ...options }, { srcFile });
-    if (result && result.success) {
-      newContent[inputItemName] = result.data;
-      props.onContentChanged(newContent);
-    }
+    newContent[inputItemName] = url;
+    props.onContentChanged(newContent);
   };
 
   const onInputChanged = (e: any, inputItemName: string) => {
@@ -80,7 +56,7 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
             initialValue={content.pmLegalName}
           >
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmLegalName');
               }}
@@ -94,7 +70,7 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
             initialValue={content.pmLegalIdNum}
           >
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmLegalIdNum');
               }}
@@ -109,24 +85,16 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
             name="pmCertificatePic1"
           >
             <Card bodyStyle={{ padding: '1px' }}>
-              <Image
-                width={200}
-                height={120}
-                src={makeStaticUrl(pmCertificatePic1)}
-                fallback={BlankPicture}
+              <ImgCropUpload
+                ImageWidth={200}
+                Imageheight={120}
+                imageSrc={pmCertificatePic1}
+                fuProp={fuProp}
+                IsView={IsView}
+                onUploadReturnURL={(url) => {
+                  questUpload(url, 'pmCertificatePic1');
+                }}
               />
-              {!lsView && (
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmCertificatePic1');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
-              )}
             </Card>
           </FormItem>
         </Col>
@@ -136,24 +104,16 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
             name="pmCertificatePic2"
           >
             <Card bodyStyle={{ padding: '1px' }}>
-              <Image
-                width={200}
-                height={120}
-                src={makeStaticUrl(pmCertificatePic2)}
-                fallback={BlankPicture}
+              <ImgCropUpload
+                ImageWidth={200}
+                Imageheight={120}
+                imageSrc={pmCertificatePic2}
+                fuProp={fuProp}
+                IsView={IsView}
+                onUploadReturnURL={(url) => {
+                  questUpload(url, 'pmCertificatePic2');
+                }}
               />
-              {!lsView && (
-                <Upload
-                  customRequest={(options: any) => {
-                    questUpload(options, 'pmCertificatePic2');
-                  }}
-                  listType="picture"
-                  showUploadList={false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />} />
-                </Upload>
-              )}
             </Card>
           </FormItem>
         </Col>
@@ -163,48 +123,32 @@ const ApplyLegalPersonTab: React.FC<LegalPersonTabProp> = (props) => {
           <Col span={12}>
             <FormItem label="税务登记证1" name="pmCertificatePic3">
               <Card bodyStyle={{ padding: '1px' }}>
-                <Image
-                  width={200}
-                  height={120}
-                  src={makeStaticUrl(pmCertificatePic3)}
-                  fallback={BlankPicture}
+                <ImgCropUpload
+                  ImageWidth={200}
+                  Imageheight={120}
+                  imageSrc={pmCertificatePic3}
+                  fuProp={fuProp}
+                  IsView={IsView}
+                  onUploadReturnURL={(url) => {
+                    questUpload(url, 'pmCertificatePic3');
+                  }}
                 />
-                {!lsView && (
-                  <Upload
-                    customRequest={(options: any) => {
-                      questUpload(options, 'pmCertificatePic3');
-                    }}
-                    listType="picture"
-                    showUploadList={false}
-                    maxCount={1}
-                  >
-                    <Button icon={<UploadOutlined />} />
-                  </Upload>
-                )}
               </Card>
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem label="税务登记证2" name="pmCertificatePic4">
               <Card bodyStyle={{ padding: '1px' }}>
-                <Image
-                  width={200}
-                  height={120}
-                  src={makeStaticUrl(pmCertificatePic4)}
-                  fallback={BlankPicture}
+                <ImgCropUpload
+                  ImageWidth={200}
+                  Imageheight={120}
+                  imageSrc={pmCertificatePic4}
+                  fuProp={fuProp}
+                  IsView={IsView}
+                  onUploadReturnURL={(url) => {
+                    questUpload(url, 'pmCertificatePic4');
+                  }}
                 />
-                {!lsView && (
-                  <Upload
-                    customRequest={(options: any) => {
-                      questUpload(options, 'pmCertificatePic4');
-                    }}
-                    listType="picture"
-                    showUploadList={false}
-                    maxCount={1}
-                  >
-                    <Button icon={<UploadOutlined />} />
-                  </Upload>
-                )}
               </Card>
             </FormItem>
           </Col>

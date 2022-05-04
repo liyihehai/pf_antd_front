@@ -1,13 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { message, Tabs } from 'antd';
+import { message, Tabs, Modal } from 'antd';
 import { getValidLibItems } from '@/services/pf-basic';
 import { LibType } from '@/components/Global/data';
 import styles from '@/components/Global/global.less';
-import { merchantSettingList, queryMerchantDetail } from '@/services/merchant';
+import {
+  merchantSettingList,
+  queryMerchantDetail,
+  setMerchantStart,
+  setMerchantPause,
+  setMerchantOffLine,
+} from '@/services/merchant';
 import { showMerchantDetailForm } from './components/MerchantDetailForm';
 import { closeModal } from '@/components/Global';
 
@@ -53,7 +58,7 @@ const MerchantSettingList: React.FC = () => {
 
   const showDetailDialog = async (
     record: MerSetting.MerchantItem,
-    isView: boolean,
+    IsView: boolean,
     onOk:
       | undefined
       | ((merchant: MerSetting.MerchantItem, expand?: MerSetting.MerchantExpand) => void),
@@ -71,7 +76,7 @@ const MerchantSettingList: React.FC = () => {
         busiTypeList,
         merchant,
         merchantExpand,
-        IsView: isView,
+        IsView: IsView,
         onOk,
       });
     }
@@ -82,6 +87,7 @@ const MerchantSettingList: React.FC = () => {
   };
   //设置商户信息
   const merchantSet = (record: MerSetting.MerchantItem) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     showDetailDialog(record, false, (merchant, expand) => {
       message.success('保存商户：' + merchant.pmName + ',操作成功');
       closeModal();
@@ -89,9 +95,49 @@ const MerchantSettingList: React.FC = () => {
     });
   };
   //暂停服务
-  const paushService = (record: MerSetting.MerchantItem) => {};
+  const paushService = (record: MerSetting.MerchantItem) => {
+    Modal.confirm({
+      title: '温馨提示',
+      content: '确定要设置商户[' + record.pmName + ']为暂停服务吗?',
+      cancelText: '取消',
+      okText: '确定',
+      onOk: async () => {
+        const result = await setMerchantPause(record);
+        if (result && result.success) {
+          reload();
+        }
+      },
+    });
+  };
   //启用服务
-  const startService = (record: MerSetting.MerchantItem) => {};
+  const startService = (record: MerSetting.MerchantItem) => {
+    Modal.confirm({
+      title: '温馨提示',
+      content: '确定要为商户[' + record.pmName + ']设置可服务吗?',
+      cancelText: '取消',
+      okText: '确定',
+      onOk: async () => {
+        const result = await setMerchantStart(record);
+        if (result && result.success) {
+          reload();
+        }
+      },
+    });
+  };
+  const offLineService = (record: MerSetting.MerchantItem) => {
+    Modal.confirm({
+      title: '温馨提示',
+      content: '确定要下架商户[' + record.pmName + ']吗?商户下架后不能在本页面继续操作',
+      cancelText: '取消',
+      okText: '确定',
+      onOk: async () => {
+        const result = await setMerchantOffLine(record);
+        if (result && result.success) {
+          reload();
+        }
+      },
+    });
+  };
 
   const tabOptions = (
     <Tabs onChange={onStateSelChanged} type="card" activeKey={selState + ''}>
@@ -130,6 +176,16 @@ const MerchantSettingList: React.FC = () => {
     if (record.pmState == 2) {
       buttons.push(
         <a
+          key="merchantSet"
+          onClick={() => {
+            merchantSet(record);
+          }}
+        >
+          设置
+        </a>,
+      );
+      buttons.push(
+        <a
           key="startService"
           onClick={() => {
             startService(record);
@@ -140,12 +196,12 @@ const MerchantSettingList: React.FC = () => {
       );
       buttons.push(
         <a
-          key="merchantSet"
+          key="offLineService"
           onClick={() => {
-            merchantSet(record);
+            offLineService(record);
           }}
         >
-          设置
+          下架
         </a>,
       );
     }

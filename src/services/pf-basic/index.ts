@@ -28,6 +28,35 @@ export async function queryAddressGeocode(params: any) {
     data: params || {},
   });
 }
+//返回文件上传路径的定义
+export async function uploadPathParam(params: any) {
+  return request<API.ResponseResult>('/api/pfbasic/sysparam/uploadPathParam', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//保存应用的上传文件路径定义
+export async function saveUploadPathFactory(params: any) {
+  return request<API.ResponseResult>('/api/pfbasic/sysparam/saveUploadPathFactory', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//删除上传文件路径设置
+export async function deleteUploadPathItem(params: any) {
+  return request<API.ResponseResult>('/api/pfbasic/sysparam/deleteUploadPathItem', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//通知服务器重载文件上传地址参数
+export async function notifyReloadUploadPath() {
+  return request<API.ResponseResult>('/api/pfbasic/sysparam/notifyReloadUploadPath', {
+    method: 'POST',
+    data: undefined,
+  });
+}
+
 //分页取得数据字典子项列表（分页，含除删除以外的所有子项）
 export async function getLibraryItemList(params: any) {
   return request<API.ResponseResult>('/api/basicInfo/library/getLibraryItemList', {

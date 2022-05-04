@@ -31,7 +31,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
   const [pmLinkPhone, setPmLinkPhone] = useState<string>(content.pmLinkPhone ?? '');
   const [pmIntroduce, setPmIntroduce] = useState<string>(content.pmIntroduce ?? '');
 
-  const [lsView] = useState<boolean>(props.lsView ?? false);
+  const [IsView] = useState<boolean>(props.IsView ?? false);
 
   useEffect(() => {
     setContent(props.content);
@@ -103,7 +103,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="商户简称" name="pmShortName" initialValue={pmShortName}>
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmShortName');
               }}
@@ -120,7 +120,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="电子邮箱" name="pmEmail" initialValue={pmEmail}>
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmEmail');
               }}
@@ -164,7 +164,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="邮政编码" name="pmZipcode" initialValue={pmZipcode}>
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmZipcode');
               }}
@@ -178,13 +178,13 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
             <Input.Group compact>
               <Input
                 value={pmAddress}
-                readOnly={lsView}
-                style={{ width: lsView ? '100%' : 'calc(100% - 105px)' }}
+                readOnly={IsView}
+                style={{ width: IsView ? '100%' : 'calc(100% - 105px)' }}
                 onChange={(e: any) => {
                   onInputChanged(e, 'pmAddress');
                 }}
               />
-              {!lsView && (
+              {!IsView && (
                 <Button
                   type="primary"
                   onClick={() => {
@@ -214,7 +214,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="联系人姓名" name="pmLinkName" initialValue={pmLinkName}>
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmLinkName');
               }}
@@ -224,7 +224,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
         <Col span={12}>
           <FormItem label="联系人电话" name="pmLinkPhone" initialValue={pmLinkPhone}>
             <Input
-              readOnly={lsView}
+              readOnly={IsView}
               onChange={(e: any) => {
                 onInputChanged(e, 'pmLinkPhone');
               }}
@@ -242,7 +242,7 @@ const ApplyMerchantTab: React.FC<ApplyMerchantTabProp> = (props) => {
             wrapperCol={{ span: 20 }}
           >
             <TextArea
-              readOnly={lsView}
+              readOnly={IsView}
               showCount
               maxLength={200}
               rows={3}

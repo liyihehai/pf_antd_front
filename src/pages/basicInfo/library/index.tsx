@@ -116,7 +116,7 @@ const Library: React.FC = () => {
     {
       title: '分项编号',
       dataIndex: 'typeItemCode',
-      width: 75,
+      width: 150,
     },
     {
       title: '分项名称',

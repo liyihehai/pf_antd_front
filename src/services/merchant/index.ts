@@ -94,3 +94,24 @@ export async function queryMerchantDetail(params: any) {
     data: params || {},
   });
 }
+/**设置商户启动服务 */
+export async function setMerchantStart(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/setMerchantStart', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**设置商户下架 */
+export async function setMerchantPause(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/setMerchantPause', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**设置商户下架 */
+export async function setMerchantOffLine(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/setMerchantOffLine', {
+    method: 'POST',
+    data: params || {},
+  });
+}

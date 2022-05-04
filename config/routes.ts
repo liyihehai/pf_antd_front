@@ -83,6 +83,17 @@
         redirect: '/basicInfo/library',
       },
       {
+        name: '系统参数',
+        path: '/basicInfo/sysparam',
+        routes: [
+          {
+            name: '文件上传地址',
+            path: '/basicInfo/sysparam/uploadPathParam',
+            component: './basicInfo/sysparam/UploadPathParam',
+          },
+        ],
+      },
+      {
         name: '数据字典',
         path: '/basicInfo/library',
         component: './basicInfo/library',
