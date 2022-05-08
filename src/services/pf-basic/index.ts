@@ -85,3 +85,24 @@ export async function getValidLibItems(params: any) {
     data: params || {},
   });
 }
+//分页查询业务模块列表
+export async function getBusinessModuleList(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/busiModule/getBusinessModuleList', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//保存业务模块定义
+export async function saveBusinessModule(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/busiModule/saveBusinessModule', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+//设置业务模块状态
+export async function setBusinessModuleStatus(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/busiModule/setBusinessModuleStatus', {
+    method: 'POST',
+    data: params || {},
+  });
+}

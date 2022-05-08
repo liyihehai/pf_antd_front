@@ -98,6 +98,11 @@
         path: '/basicInfo/library',
         component: './basicInfo/library',
       },
+      {
+        name: '业务模块',
+        path: '/basicInfo/busimodule',
+        component: './basicInfo/busimodule/BusiModuleList',
+      },
     ],
   },
   {

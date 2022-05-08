@@ -4,6 +4,9 @@ declare namespace GlobalForm {
     modalVisible?: boolean;
     maskClosable?: boolean;
   };
+  type MVFormProps = ModelProps & {
+    IsView: boolean;
+  };
   type SelProps = ModelProps & {
     onSelected?: (selItems: any | any[]) => void;
     selModel: 'single' | 'multiple';
