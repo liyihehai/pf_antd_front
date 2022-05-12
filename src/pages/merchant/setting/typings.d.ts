@@ -42,6 +42,37 @@ declare namespace MerSetting {
     createTime?: Date; //创建时间
   };
 
+  type MerchantUtiAccount = {
+    id?: number; //KEY id
+    pmCode?: string; //商户代码
+    accountCode?: string; //账户代码
+    accountPws?: string; //账户密码
+    accountToken?: string; //Token
+    tokenCreateTime?: Date; //Token创建时间
+    tokenExpireTime?: Date; //Token过期时间
+    oldToken?: string; //老token
+    oldTokenCreateTime?: Date; //老token创建时间
+    oldtokenExpireTime?: Date; //老token过期时间
+    secType?: string; //加密类型
+    interfaceVersion?: string; //接口版本
+    appRsaPubkey?: string; //APP RSA公钥
+    appRsaPrikey?: string; //APP RSA私钥
+    merRsaPubkey?: string; //商户 RSA公钥
+    merRsaPrikey?: string; //商户 RSA私钥
+    defBackUrl?: string; //默认回调地址
+    validIpList?: string; //有效IP地址列表
+    backId?: string; //商户认证号
+    backKey?: string; //商户认证密码
+    accountMemo?: string; //账户备注
+    accountState?: number; //账户状态:0新建,1开通,2暂停,3注销
+    busiOpenTime?: Date; //业务开通时间
+    busiExpireTime?: Date; //业务到期时间
+    createBy?: string; //创建人
+    createTime?: Date; //创建时间
+    updateBy?: string; //更改人
+    updateTime?: Date; //最后更改时间
+  };
+
   type MerchantTabProps = {
     merchant: MerchantItem;
     merchantExpand?: MerchantExpand;
@@ -54,5 +85,11 @@ declare namespace MerSetting {
     onOk?: (merchant: MerchantItem, expand?: MerchantExpand) => void;
     modalVisible?: boolean;
     maskClosable?: boolean;
+  };
+
+  type UtiAccountProps = GlobalForm.ModelProps & {
+    utiAccount: MerchantUtiAccount;
+    pmShortName: string;
+    onOk?: (account: MerchantUtiAccount) => void;
   };
 }

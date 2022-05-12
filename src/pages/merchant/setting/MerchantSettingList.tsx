@@ -12,8 +12,10 @@ import {
   setMerchantStart,
   setMerchantPause,
   setMerchantOffLine,
+  getUtiAccountByMerchantCode,
 } from '@/services/merchant';
 import { showMerchantDetailForm } from './components/MerchantDetailForm';
+import { showMerchantUtiAccount } from './components/MerchantUtiAccount';
 import { closeModal } from '@/components/Global';
 
 const { TabPane } = Tabs;
@@ -138,6 +140,34 @@ const MerchantSettingList: React.FC = () => {
       },
     });
   };
+  const utiAccount = async (record: MerSetting.MerchantItem) => {
+    const nDate = new Date();
+    if (nDate.getTime() - buttonClickTime.getTime() < 2000) {
+      return;
+    } else {
+      setButtonClickTime(nDate);
+    }
+    const result = await getUtiAccountByMerchantCode({ pmCode: record.pmCode });
+    if (result) {
+      if (result.success && result.data != null) {
+        showMerchantUtiAccount({
+          pmShortName: record.pmShortName ?? '',
+          utiAccount: result.data,
+          onOk: (account) => {
+            if (account) closeModal();
+          },
+        });
+      } else {
+        showMerchantUtiAccount({
+          pmShortName: record.pmShortName ?? '',
+          utiAccount: { pmCode: record.pmCode },
+          onOk: (account) => {
+            if (account) closeModal();
+          },
+        });
+      }
+    }
+  };
 
   const tabOptions = (
     <Tabs onChange={onStateSelChanged} type="card" activeKey={selState + ''}>
@@ -202,6 +232,18 @@ const MerchantSettingList: React.FC = () => {
           }}
         >
           下架
+        </a>,
+      );
+    }
+    if (record.pmState == 1 || record.pmState == 2) {
+      buttons.push(
+        <a
+          key="utiAccount"
+          onClick={() => {
+            utiAccount(record);
+          }}
+        >
+          UTI
         </a>,
       );
     }

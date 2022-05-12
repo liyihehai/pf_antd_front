@@ -115,3 +115,31 @@ export async function setMerchantOffLine(params: any) {
     data: params || {},
   });
 }
+/**取得商户UTI账户信息 */
+export async function getUtiAccountByMerchantCode(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/getUtiAccountByMerchantCode', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**设置UTI账户 */
+export async function merchantCreateUTIAccount(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/merchantCreateUTIAccount', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**商户UTI账户重置 */
+export async function merchantUTIAccountReset(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/merchantUTIAccountReset', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**创建产生密钥对 */
+export async function utiAccountGenKeys(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantSetting/utiAccountGenKeys', {
+    method: 'POST',
+    data: params || {},
+  });
+}
