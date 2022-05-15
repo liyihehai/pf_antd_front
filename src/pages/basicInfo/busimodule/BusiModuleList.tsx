@@ -36,7 +36,7 @@ const BusiModuleList: React.FC = () => {
   };
   const addModule = () => {
     showBusiModuleModify(false, {
-      module: { id: 0, moduleStatus: 0 },
+      module: { id: 0, moduleStatus: 0, moduleType: 2 },
       onOk: (m: BusiModule.ModuleItem) => {
         onModuleChanged(m);
       },
@@ -188,7 +188,7 @@ const BusiModuleList: React.FC = () => {
       title: '模块名称',
       dataIndex: 'moduleName',
       align: 'left',
-      width: '100px',
+      width: '150px',
     },
     {
       title: '模块说明',
@@ -197,10 +197,17 @@ const BusiModuleList: React.FC = () => {
       width: '200px',
     },
     {
-      title: '最新版本',
-      dataIndex: 'currentVersion',
-      align: 'left',
+      title: '模块类型',
+      dataIndex: 'moduleType',
       width: '100px',
+      valueEnum: {
+        '1': {
+          text: '框架模块',
+        },
+        '2': {
+          text: '普通模块',
+        },
+      },
     },
     {
       title: '模块状态',
@@ -223,10 +230,16 @@ const BusiModuleList: React.FC = () => {
       },
     },
     {
+      title: '最新版本',
+      dataIndex: 'currentVersion',
+      align: 'left',
+      width: '120px',
+    },
+    {
       title: '创建时间',
       dataIndex: 'createDate',
       align: 'left',
-      width: '70px',
+      width: '80px',
       valueType: 'date',
       hideInSearch: true,
     },

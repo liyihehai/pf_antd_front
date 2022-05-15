@@ -10,6 +10,7 @@ declare namespace BusiModule {
     createDate: Date; //创建时间
     updateBy: string; //更改人
     updateDate: Date; //更改时间
+    moduleType: number; //模块类型:1框架模块，2普通模块
   };
   type BusiModuleProps = GlobalForm.MVFormProps & {
     module: ModuleItem;

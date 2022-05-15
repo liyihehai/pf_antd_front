@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Radio, Button, message } from 'antd';
+import { Modal, Form, Input, Radio, Button, message, Select } from 'antd';
 import { showModal, closeModal } from '@/components/Global';
 import styles from '@/components/Global/global.less';
 import { saveBusinessModule } from '@/services/pf-basic';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
+const Option = Select.Option;
 
 const BusiModuleModify: React.FC<BusiModule.BusiModuleProps> = (props) => {
   const [module, setModule] = useState<BusiModule.ModuleItem>(props.module || {});
@@ -92,6 +93,21 @@ const BusiModuleModify: React.FC<BusiModule.BusiModuleProps> = (props) => {
           initialValue={module.moduleName}
         >
           <Input readOnly={IsView} maxLength={100} />
+        </FormItem>
+        <FormItem
+          label="模块类型"
+          name="moduleType"
+          rules={[{ required: true, message: '模块类型!' }]}
+          initialValue={module.moduleType + ''}
+        >
+          <Select>
+            <Option key={'1'}>
+              <span>{'框架模块'}</span>
+            </Option>
+            <Option key={'2'}>
+              <span>{'普通模块'}</span>
+            </Option>
+          </Select>
         </FormItem>
         <FormItem label="最新版本" name="currentVersion" initialValue={module.currentVersion}>
           <Input readOnly={IsView} maxLength={50} />
