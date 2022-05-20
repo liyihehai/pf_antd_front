@@ -17,4 +17,5 @@ export const BlankPicture =
 
 export const LibType = {
   busiType: '0001', //行业分类
+  BusiApp: 'Y001', //商业应用
 };

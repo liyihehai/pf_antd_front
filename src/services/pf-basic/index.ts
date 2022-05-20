@@ -106,3 +106,10 @@ export async function setBusinessModuleStatus(params: any) {
     data: params || {},
   });
 }
+//查询有效商业模块的Key-Value序列
+export async function getValidBusiModuleKVList(params: any) {
+  return request<API.ResponseResult>('/api/basicInfo/busiModule/getValidBusiModuleKVList', {
+    method: 'POST',
+    data: params || {},
+  });
+}

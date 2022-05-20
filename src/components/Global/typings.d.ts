@@ -17,4 +17,10 @@ declare namespace GLOBAL {
     key: string;
     value?: string;
   };
+  type FormProps = {
+    onCancel?: () => void;
+    onOk?: (obj: any) => void;
+    modalVisible?: boolean;
+    maskClosable?: boolean;
+  };
 }

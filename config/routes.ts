@@ -138,6 +138,12 @@
         path: '/merchant/settingList',
         component: './merchant/setting/MerchantSettingList',
       },
+      {
+        name: '商户授权管理',
+        icon: 'icon-jbs-testCustomermanagement',
+        path: '/merchant/licenseList',
+        component: './merchant/license/MerchantLicenseList',
+      },
     ],
   },
   {

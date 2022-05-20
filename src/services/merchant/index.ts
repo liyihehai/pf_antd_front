@@ -143,3 +143,10 @@ export async function utiAccountGenKeys(params: any) {
     data: params || {},
   });
 }
+/**返回商户license列表数据 */
+export async function merchantLicenseList(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantLicense/merchantLicenseList', {
+    method: 'POST',
+    data: params || {},
+  });
+}
