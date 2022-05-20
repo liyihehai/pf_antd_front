@@ -184,3 +184,9 @@ export const makeUploadServiceUrl = (url: string) => {
   const appEnvData = getAppEnvData();
   return appendURL(appEnvData?.uploadFileServiceURL, url);
 };
+
+export const makeServerServiceUrl = (url: string) => {
+  if (!url) return '';
+  const appEnvData = getAppEnvData();
+  return appendURL(appEnvData?.uploadFileServiceURL, url);
+};

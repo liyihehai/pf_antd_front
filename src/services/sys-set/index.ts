@@ -1,4 +1,5 @@
 import { request } from 'umi';
+import { makeServerServiceUrl } from '@/components/Global/LocalStoreUtil';
 /**
  * 取得所有菜单定义用于编辑 - 系统管理员功能
  */
@@ -146,3 +147,60 @@ export async function saveOperatorFunctions(params: any) {
     data: params || {},
   });
 }
+//----自动任务-------------
+/**分页查询服务列表 */
+export const taskJobPageList = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/taskJobPageList');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};
+//增加新任务
+export const addTaskJob = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/addTaskJob');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};
+//更改任务
+export const updateTaskJob = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/updateTaskJob');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};
+//删除任务
+export const deleteTaskJob = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/deleteTaskJob');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};
+//设置等待执行
+export const setTaskJobWaiting = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/setTaskJobWaiting');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};
+//设置暂停执行
+export const setTaskJobPause = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/setTaskJobPause');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};
+//强制执行任务
+export const forceExecute = (params: any) => {
+  const url = makeServerServiceUrl('svr-api/pf-service/forceExecute');
+  return request<API.ResponseResult>(url, {
+    method: 'POST',
+    data: params || {},
+  });
+};

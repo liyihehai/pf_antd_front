@@ -72,6 +72,12 @@
         path: '/sysset/operatorSetList',
         component: './sysset/operator/OperatorList',
       },
+      {
+        name: '自动任务管理',
+        icon: 'icon-jbs-testCustomermanagement',
+        path: '/sysset/taskJobMain',
+        component: './sysset/task/taskList',
+      },
     ],
   },
   {
