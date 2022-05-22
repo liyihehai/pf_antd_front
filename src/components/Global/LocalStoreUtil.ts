@@ -1,9 +1,10 @@
+import { MenuTheme } from 'antd';
 import { appendURL } from './stringUtil';
-
 export const login_session_key = 'login_session_key';
 export const user_menu_functions = 'user_menu_functions';
 export const app_env_data = 'app_env_data';
 export const user_menu_map = 'user_menu_map';
+const nav_theme_name = 'nav_theme_name';
 /**
  * 写LocalStoreage
  * //storageType（缓存类型，1：localStorage, 2：sessionStorage，默认2）
@@ -189,4 +190,16 @@ export const makeServerServiceUrl = (url: string) => {
   if (!url) return '';
   const appEnvData = getAppEnvData();
   return appendURL(appEnvData?.uploadFileServiceURL, url);
+};
+
+export const setNavTheme = (navThemeName: string) => {
+  let theme_name = navThemeName;
+  if (!theme_name) theme_name = 'light';
+  setStorage(nav_theme_name, navThemeName, 1);
+};
+
+export const getNavTheme = (): MenuTheme => {
+  let theme_name = getStorage(nav_theme_name, 1) as MenuTheme;
+  if (!theme_name) theme_name = 'light';
+  return theme_name;
 };

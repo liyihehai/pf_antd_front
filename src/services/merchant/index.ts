@@ -150,3 +150,24 @@ export async function merchantLicenseList(params: any) {
     data: params || {},
   });
 }
+/**保存商户许可信息 */
+export async function saveMerchantLicense(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantLicense/saveMerchantLicense', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**确认商户许可，编辑->待执行->执行中 */
+export async function confirmMerchantLicense(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantLicense/confirmMerchantLicense', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**删除商户许可 */
+export async function deleteMerchantLicense(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantLicense/deleteMerchantLicense', {
+    method: 'POST',
+    data: params || {},
+  });
+}
