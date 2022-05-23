@@ -27,5 +27,6 @@ declare namespace License {
         createTime: string; //创建时间
         updateBy: string; //更改人
         updateDate: string; //更改时间
+        merchantTerminals: string;   //商户终端
     };
 }

@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button, Select, DatePicker, Row, Col, List, Typography, message } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import {
+    Modal, Form, Input, Button, Select, DatePicker,
+    Row, Col, List, Card, message, Tag, Checkbox
+} from 'antd';
+import { LaptopOutlined } from '@ant-design/icons';
 import { showModal, closeModal } from '@/components/Global';
 import styles from '@/components/Global/global.less';
-import { saveMerchantLicense } from '@/services/merchant';
+import { saveMerchantLicense, getUtiAccountByMerchantCode } from '@/services/merchant';
 import { showMerchantSelectForm } from '@/pages/globalForm/MerchantSelectForm';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import { string2Date, monthAdd, date2String } from '@/components/Global/dateutil';
-import { genRandomCode } from '@/components/Global/stringUtil';
+import licenseStyle from '../../setting/css/index.less';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -28,10 +32,34 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
     const license: License.AppLicense = props.license;
     const [IsView] = useState<boolean>(props.IsView ?? false);
     const [terminalList, setTerminalList] = useState<string[]>(license.terminals?.split(',') ?? []);
-    const isModify: boolean = license.id && license.id > 0 ? true : false;
+    const [merchantTerminals, setMerchantTerminals] = useState<string>(license.merchantTerminals ?? '[]');
+    const [merhcantTerminalList, setMerhcantTerminalList] = useState<MerSetting.Terminal[]>(JSON.parse(merchantTerminals) ?? []);
+    const [terminalSelList, setTerminalSelList] = useState<boolean[]>([]);
 
-    useEffect(() => { }, [props]);
     const [form] = Form.useForm();
+
+    const onMerchantChanged = () => {
+        const list = [];
+        const selList = [];
+        for (let i = 0; i < merhcantTerminalList.length; i++) {
+            const merchantTerminal = merhcantTerminalList[i];
+            selList[i] = false;
+            for (let m = 0; m < terminalList.length; m++) {
+                if (terminalList[m] == merchantTerminal.term) {
+                    selList[i] = true;
+                    list[list.length] = merchantTerminal.term;
+                    break;
+                }
+            }
+        }
+        setTerminalSelList(selList);
+        setTerminalList(list);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        onTerminalCountChanged(list);
+    }
+    useEffect(() => {
+        onMerchantChanged();
+    }, [props]);
 
     const onOk = async () => {
         try {
@@ -53,13 +81,22 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
 
     const onSearchMerchant = () => {
         showMerchantSelectForm({
-            onSelected: (selItems: any | any[]) => {
+            onSelected: async (selItems: any | any[]) => {
                 const selMerchant: MerSetting.MerchantItem = selItems;
-                license.pmCode = selMerchant.pmCode ?? '';
-                license.pmName = selMerchant.pmName ?? '';
-                license.pmShortName = selMerchant.pmShortName ?? '';
-                form.setFieldsValue({ pmName: license.pmName });
-                closeModal();
+                const result = await getUtiAccountByMerchantCode(selMerchant);
+                if (result && result.success && result.data) {
+                    license.pmCode = selMerchant.pmCode ?? '';
+                    license.pmName = selMerchant.pmName ?? '';
+                    license.pmShortName = selMerchant.pmShortName ?? '';
+                    license.merchantTerminals = result.data.terminals;
+                    setMerchantTerminals(license.merchantTerminals);
+                    setMerhcantTerminalList(JSON.parse(license.merchantTerminals));
+                    onMerchantChanged();
+                    form.setFieldsValue({ pmName: license.pmName });
+                    closeModal();
+                } else {
+                    message.error('商户尚未开通UTI账户');
+                }
             },
             selModel: 'single',
         });
@@ -86,14 +123,6 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
         form.setFieldsValue({ copyCount: license.copyCount });
     }
 
-    const onAddTerminal = () => {
-        const list = [...terminalList];
-        const t = 'term:' + genRandomCode(10);
-        list[list.length] = t;
-        setTerminalList(list);
-        onTerminalCountChanged(list);
-    }
-
     const onCopyTerminal = () => {
         const $temp = document.createElement('input');
         document.body.append($temp);
@@ -104,7 +133,26 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
         message.success('终端序列已拷贝至剪贴板');
     }
 
-    const onDeleteTerminal = (item: string) => {
+    const onAddTerminal = (item: string, index: number) => {
+        const list = [...terminalList];
+        let isExist: boolean = false;
+        for (let i = 0; i < terminalList.length; i++) {
+            if (list[i] == item) {
+                isExist = true;
+                break;
+            }
+        }
+        if (!isExist) {
+            list[list.length] = item;
+            setTerminalList(list);
+            onTerminalCountChanged(list);
+        }
+        const selList: boolean[] = [...terminalSelList];
+        selList[index] = true;
+        setTerminalSelList(selList);
+    }
+
+    const onDeleteTerminal = (item: string, index: number) => {
         const list = [...terminalList];
         for (let i = 0; i < terminalList.length; i++) {
             if (list[i] == item) {
@@ -113,6 +161,17 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
         }
         setTerminalList(list);
         onTerminalCountChanged(list);
+        const selList: boolean[] = [...terminalSelList];
+        selList[index] = false;
+        setTerminalSelList(selList);
+    }
+
+    const onTerminalChanged = (e: CheckboxChangeEvent, item: MerSetting.Terminal, index: number) => {
+        if (e.target.checked) {
+            onAddTerminal(item.term, index);
+        } else {
+            onDeleteTerminal(item.term, index);
+        }
     }
 
     //渲染底部按钮
@@ -127,17 +186,6 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                 }}
             >复制终端</Button>
         );
-        if (!IsView) {
-            buttons.push(
-                <Button
-                    key=''
-                    type="default"
-                    onClick={() => {
-                        onAddTerminal();
-                    }}
-                >添加终端</Button>
-            );
-        }
         buttons.push(
             <Button key="btnClose" onClick={() => closeModal()}>
                 关闭
@@ -172,7 +220,7 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
     return (
         <Modal
             className={styles.modelStyles}
-            width={640}
+            width={820}
             bodyStyle={{ padding: '15px 15px 15px' }}
             destroyOnClose
             title={title}
@@ -188,8 +236,8 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                 form={form}
                 layout="horizontal"
                 name="merchantLicenseModify"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 18 }}
             >
                 <Row>
                     <Col span={24}>
@@ -199,8 +247,8 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                                 name="pmName"
                                 rules={[{ required: true, message: '请输入商户名称!' }]}
                                 initialValue={license.pmName}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 20 }}
+                                labelCol={{ span: 3 }}
+                                wrapperCol={{ span: 21 }}
                             >
                                 <Search readOnly={true} placeholder="输入商户" onSearch={onSearchMerchant} />
                             </FormItem>)}
@@ -210,8 +258,8 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                                 name="pmName"
                                 rules={[{ required: true, message: '请输入商户名称!' }]}
                                 initialValue={license.pmName}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 20 }}
+                                labelCol={{ span: 3 }}
+                                wrapperCol={{ span: 21 }}
                             >
                                 <Input readOnly={true} placeholder="输入商户" />
                             </FormItem>)}
@@ -308,8 +356,8 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                         <FormItem
                             label="终端序列"
                             name="terminalsList"
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 20 }}
+                            labelCol={{ span: 3 }}
+                            wrapperCol={{ span: 21 }}
                         >
                             <div
                                 id="scrollableDiv"
@@ -320,20 +368,26 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                                     border: '1px solid rgba(140, 140, 140, 0.35)',
                                 }}
                             >
-                                <List bordered
-                                    dataSource={terminalList}
+                                <List
+                                    grid={{ gutter: 26, column: 3 }}
+                                    dataSource={merhcantTerminalList}
                                     renderItem={(item, index) => (
-                                        <List.Item
-                                            actions={[(!IsView && <Button
-                                                key=''
-                                                type="default"
-                                                shape="circle"
-                                                icon={<DeleteOutlined />}
-                                                onClick={() => {
-                                                    onDeleteTerminal(item);
-                                                }}
-                                            />)]}>
-                                            <Typography.Text mark>{'[终端' + (index + 1) + ']'}</Typography.Text> {item}
+                                        <List.Item className={licenseStyle.terminalCardStyle}>
+                                            <Card>
+                                                <Row gutter={24}>
+                                                    <Col span={19}>
+                                                        <Tag icon={<LaptopOutlined />} />
+                                                    </Col>
+                                                    <Col span={5}>
+                                                        <Checkbox onChange={(e: CheckboxChangeEvent) => { onTerminalChanged(e, item, index) }}
+                                                            checked={terminalSelList[index]} disabled={IsView} />
+                                                    </Col>
+                                                </Row>
+                                                <hr color='#cd201f' />
+                                                <Row><Col>{<Tag>名称</Tag>}</Col><Col>{item.name}</Col></Row>
+                                                <Row><Col>{<Tag>编号</Tag>}</Col><Col>{item.term}</Col></Row>
+                                                <Row><Col>{<Tag>地址</Tag>}</Col><Col>{item.ip}</Col></Row>
+                                            </Card>
                                         </List.Item>
                                     )}
                                 />

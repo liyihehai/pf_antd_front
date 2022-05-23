@@ -71,6 +71,7 @@ declare namespace MerSetting {
     createTime?: Date; //创建时间
     updateBy?: string; //更改人
     updateTime?: Date; //最后更改时间
+    terminals?: string; //终端:[{term:xxx,ip:xxx,name:xxx},{term:xxx}...]
   };
 
   type MerchantTabProps = {
@@ -91,5 +92,28 @@ declare namespace MerSetting {
     utiAccount: MerchantUtiAccount;
     pmShortName: string;
     onOk?: (account: MerchantUtiAccount) => void;
+  };
+
+  type Terminal = {
+    term: string;
+    ip: string;
+    name?: string;
+  };
+
+  type TerminalTabProp = {
+    terminals: string;
+    IsView?: boolean;
+    isModify?: boolean;
+    form: FormInstance<any>;
+    onTerminalsChanged: (terminals: string) => void;
+  };
+
+  type TerminalEditProp = {
+    terminal: Terminal;
+    IsView?: boolean;
+    onCancel?: () => void;
+    onOk?: (terminal: Terminal) => void;
+    modalVisible?: boolean;
+    maskClosable?: boolean;
   };
 }
