@@ -7,7 +7,7 @@ import {
 import { LaptopOutlined } from '@ant-design/icons';
 import { showModal, closeModal } from '@/components/Global';
 import styles from '@/components/Global/global.less';
-import { saveMerchantLicense, getUtiAccountByMerchantCode } from '@/services/merchant';
+import { saveMerchantLicense, getUtiAccountByMerchantCode, resetLicenseTerminal } from '@/services/merchant';
 import { showMerchantSelectForm } from '@/pages/globalForm/MerchantSelectForm';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import moment from 'moment';
@@ -174,12 +174,42 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
         }
     }
 
+    const resetTerminals = () => {
+        Modal.confirm({
+            title: '温馨提示',
+            content: '确定要重新设置商户许可的终端吗?重置后商户可能无法获取许可信息!',
+            cancelText: '取消',
+            okText: '确定',
+            onOk: async () => {
+                const l = {
+                    id: license.id,
+                    terminals: license.terminals,
+                }
+                const result = await resetLicenseTerminal(l);
+                if (result && result.success) {
+                    message.success(result.errorMessage);
+                }
+            },
+        });
+    }
+
     //渲染底部按钮
     const renderBottomButton = () => {
         const buttons = [];
+        if (IsView) {
+            buttons.push(
+                <Button
+                    key='resetTerminals'
+                    type="default"
+                    onClick={() => {
+                        resetTerminals();
+                    }}
+                >重置终端</Button>
+            );
+        }
         buttons.push(
             <Button
-                key=''
+                key='onCopyTerminal'
                 type="default"
                 onClick={() => {
                     onCopyTerminal();
@@ -380,7 +410,7 @@ const LicenseModifyForm: React.FC<LFormProp> = (props) => {
                                                     </Col>
                                                     <Col span={5}>
                                                         <Checkbox onChange={(e: CheckboxChangeEvent) => { onTerminalChanged(e, item, index) }}
-                                                            checked={terminalSelList[index]} disabled={IsView} />
+                                                            checked={terminalSelList[index]} />
                                                     </Col>
                                                 </Row>
                                                 <hr color='#cd201f' />

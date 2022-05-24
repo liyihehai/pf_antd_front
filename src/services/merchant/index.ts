@@ -171,3 +171,10 @@ export async function deleteMerchantLicense(params: any) {
     data: params || {},
   });
 }
+/**商户UTI账户重置终端 */
+export async function resetLicenseTerminal(params: any) {
+  return request<API.ResponseResult>('/api/merchant/merchantLicense/resetLicenseTerminal', {
+    method: 'POST',
+    data: params || {},
+  });
+}

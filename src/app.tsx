@@ -12,7 +12,7 @@ import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 import fetchMenuData from '@/components/Global/MenuComponent';
 import SvgIcon from '@/components/SvgIcon';
-import { getCurrentOperator, getMenuFunctiong } from '@/components/Global/LocalStoreUtil';
+import { getCurrentOperator, getMenuFunctiong, getNavTheme } from '@/components/Global/LocalStoreUtil';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -21,6 +21,10 @@ const loginPath = '/user/login';
 export const initialStateConfig = {
     loading: <PageLoading />,
 };
+
+const setNavTheme = (setting: any) => {
+    setting.settings.navTheme = getNavTheme();
+}
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -43,16 +47,20 @@ export async function getInitialState(): Promise<{
     // 如果是登录页面，不执行
     if (history.location.pathname !== loginPath) {
         const currentUser = await fetchUserInfo();
-        return {
+        const retSetting = {
             fetchUserInfo,
             currentUser,
             settings: defaultSettings,
         };
+        setNavTheme(retSetting);
+        return retSetting;
     }
-    return {
+    const retSetting = {
         fetchUserInfo,
         settings: defaultSettings,
     };
+    setNavTheme(retSetting);
+    return retSetting;
 }
 //请求前拦截，并在请求头中增减token
 const authHeaderInterceptor = (url: string, options: RequestOptionsInit) => {

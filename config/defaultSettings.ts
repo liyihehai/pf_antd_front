@@ -1,13 +1,12 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { getNavTheme } from '@/components/Global/LocalStoreUtil';
 
 const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
 } = {
-  //   navTheme: 'light',
+  navTheme: 'light',
   //navTheme: 'realDark',
-  navTheme: getNavTheme(),
+  //navTheme: getNavTheme(),
   // 拂晓蓝
   primaryColor: '#1890ff',
   splitMenus: true,
