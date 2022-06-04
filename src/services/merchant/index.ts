@@ -178,3 +178,45 @@ export async function resetLicenseTerminal(params: any) {
     data: params || {},
   });
 }
+/**取得商户菜单设置列表 */
+export async function merchantAppMenuList(params: any) {
+  return request<API.ResponseResult>('/api/merchant/appMenu/merchantAppMenuList', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**保存商户应用菜单设置 */
+export async function saveMerchantAppMenu(params: any) {
+  return request<API.ResponseResult>('/api/merchant/appMenu/saveMerchantAppMenu', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**返回应用入口列表 */
+export async function merchantAppEnterList(params: any) {
+  return request<API.ResponseResult>('/api/merchant/appMenu/merchantAppEnterList', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**确认商户应用菜单 */
+export async function confirmMerchantAppMenu(params: any) {
+  return request<API.ResponseResult>('/api/merchant/appMenu/confirmMerchantAppMenu', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**取消确认商户应用菜单 */
+export async function cancelMerchantAppMenu(params: any) {
+  return request<API.ResponseResult>('/api/merchant/appMenu/cancelMerchantAppMenu', {
+    method: 'POST',
+    data: params || {},
+  });
+}
+/**删除商户应用菜单 */
+export async function deleteMerchantAppMenu(params: any) {
+  return request<API.ResponseResult>('/api/merchant/appMenu/deleteMerchantAppMenu', {
+    method: 'POST',
+    data: params || {},
+  });
+}

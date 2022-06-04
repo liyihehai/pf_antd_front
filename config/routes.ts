@@ -144,6 +144,12 @@
         path: '/merchant/licenseList',
         component: './merchant/license/MerchantLicenseList',
       },
+      {
+        name: '商户菜单管理',
+        icon: 'icon-jbs-testCustomermanagement',
+        path: '/merchant/appMenuList',
+        component: './merchant/menu/MerchantAppMenuList',
+      },
     ],
   },
   {
